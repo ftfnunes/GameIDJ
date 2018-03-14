@@ -1,14 +1,14 @@
 #include <iostream>
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
-#include "../include/SDL_include.h"
-#include "../include/Game.h"
+#include "SDL_include.h"
+#include "Game.h"
 
 using namespace std;
 
 Game::Game(string title, int width, int height) {
-    if (instance != nullptr) {
-        instance = this;
+    if (Game::instance != nullptr) {
+        Game::instance = this;
 
         // Initialize SDL
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
@@ -83,9 +83,9 @@ SDL_Renderer* Game::GetRenderer() {
 }
 
 Game *Game::GetInstance() {
-    if (instance == nullptr) {
+    if (Game::instance == nullptr) {
         return new Game(GAME_NAME, WIDTH, HEIGHT);
     }
 
-    return instance;
+    return Game::instance;
 }

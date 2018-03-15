@@ -1,5 +1,4 @@
 JOGO
-CMakeLists.txt
 cmake-build-debug
 .idea
 log.txt

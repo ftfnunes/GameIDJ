@@ -12,10 +12,10 @@
 class Game {
   public:
     ~Game();
-    static Game *GetInstance();
+    static Game& GetInstance();
     void Run();
     SDL_Renderer *GetRenderer();
-    State *GetState();
+    State& GetState();
   private:
     Game(string title, int width, int height);
     static Game *instance;

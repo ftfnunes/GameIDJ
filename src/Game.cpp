@@ -69,8 +69,8 @@ Game::~Game() {
     IMG_Quit();
 }
 
-State* Game::GetState() {
-    return state;
+State& Game::GetState() {
+    return *state;
 }
 
 void Game::Run() {
@@ -87,10 +87,10 @@ SDL_Renderer* Game::GetRenderer() {
     return renderer;
 }
 
-Game *Game::GetInstance() {
+Game& Game::GetInstance() {
     if (instance == nullptr) {
-        return new Game(GAME_NAME, WIDTH, HEIGHT);
+        return *new Game(GAME_NAME, WIDTH, HEIGHT);
     }
 
-    return instance;
+    return *instance;
 }

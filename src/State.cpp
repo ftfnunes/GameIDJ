@@ -4,12 +4,9 @@
 #include "Music.h"
 #include "State.h"
 
-State::State() {
+State::State() : bg("img/ocean.jpg"), music("audio/stageState.ogg") {
     quitRequested = false;
-    bg = new Sprite("img/ocean.jpg");
-    music = new Music("audio/stageState.ogg");
-    music->Play();
-    Log::LogMessage("State criado");
+    music.Play();
 }
 
 void State::LoadAssets() {
@@ -20,7 +17,7 @@ void State::Update(float dt) {
 }
 
 void State::Render() {
-    bg->Render(0, 0);
+    bg.Render(0, 0);
 }
 
 bool State::QuitRequested() {
@@ -29,6 +26,4 @@ bool State::QuitRequested() {
 
 State::~State() {
     Log::LogMessage("Deletando state");
-    delete music;
-    delete bg;
 }

@@ -13,8 +13,8 @@ class State {
     void Update(float dt);
     void Render();
   private:
-    Sprite *bg;
-    Music *music;
+    Sprite bg;
+    Music music;
     bool quitRequested;
 };
 

@@ -4,6 +4,9 @@
 
 using namespace std;
 
+#ifndef SPRITE_CLASS
+#define SPRITE_CLASS
+
 class Sprite {
 public:
     Sprite();
@@ -14,10 +17,12 @@ public:
     void Render(int x, int y);
     int GetWidth();
     int GetHeight();
-    bool isOpen();
+    bool IsOpen();
 private:
     SDL_Texture *texture;
     int width;
     int height;
     SDL_Rect clipRect;
 };
+
+#endif

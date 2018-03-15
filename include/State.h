@@ -1,6 +1,9 @@
 #include "Sprite.h"
 #include "Music.h"
 
+#ifndef STATE_CLASS
+#define STATE_CLASS
+
 class State {
   public:
     State();
@@ -10,7 +13,9 @@ class State {
     void Update(float dt);
     void Render();
   private:
-    Sprite bg;
-    Music music;
+    Sprite *bg;
+    Music *music;
     bool quitRequested;
 };
+
+#endif

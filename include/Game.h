@@ -6,6 +6,9 @@
 #define WIDTH 1024
 #define HEIGHT 600
 
+#ifndef GAME_CLASS
+#define GAME_CLASS
+
 class Game {
   public:
     ~Game();
@@ -13,7 +16,6 @@ class Game {
     void Run();
     SDL_Renderer *GetRenderer();
     State *GetState();
-
   private:
     Game(string title, int width, int height);
     static Game *instance;
@@ -21,3 +23,5 @@ class Game {
     SDL_Renderer *renderer;
     State *state;
 };
+
+#endif

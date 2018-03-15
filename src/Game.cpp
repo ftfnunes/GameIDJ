@@ -1,4 +1,6 @@
 #include <iostream>
+#include <Log.h>
+
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
@@ -6,26 +8,28 @@
 
 using namespace std;
 
+Game *Game::instance = nullptr;
+
 Game::Game(string title, int width, int height) {
-    if (Game::instance != nullptr) {
-        Game::instance = this;
+    if (instance == nullptr) {
+        instance = this;
 
         // Initialize SDL
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
-            //TODO: LOG ERROR
+            Log::LogError("Error initializing SDL");
         }
 
         // Initialize SDL_IMG
         if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) != (IMG_INIT_JPG | IMG_INIT_PNG)) {
-            //TODO: LOG ERROR
+            Log::LogError("Error initializing SDL_Image");
         }
 
         // Initialize SDL_MIXER
         if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG) {
-            //TODO: LOG ERROR
+            Log::LogError("Error initializing SDL_Mixer");
         }
         if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) != 0) {
-            //TODO: LOG ERROR
+            Log::LogError("Error while opening audio");
         }
         Mix_AllocateChannels(32);
 
@@ -33,20 +37,21 @@ Game::Game(string title, int width, int height) {
         window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                   width, height, 0);
         if (window == nullptr) {
-            //TODO: LOG ERROR
+            Log::LogError("Error while creating window");
         }
 
         // Create SDL_Renderer
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (renderer == nullptr) {
-            //TODO: LOG ERROR
+            Log::LogError("Error while creating renderer");
         }
 
         //Initialize state
         state = new State();
     } else {
-        //TODO: LOG ERROR (2 instances of game class)
+        Log::LogMessage("There are two instances of game created.");
     }
+
 }
 
 Game::~Game() {
@@ -69,8 +74,8 @@ State* Game::GetState() {
 }
 
 void Game::Run() {
-    State *state = GetState();
-    while (state->QuitRequested()) {
+    state->LoadAssets();
+    while (!state->QuitRequested()) {
         state->Update(0);
         state->Render();
         SDL_RenderPresent(renderer);
@@ -83,9 +88,9 @@ SDL_Renderer* Game::GetRenderer() {
 }
 
 Game *Game::GetInstance() {
-    if (Game::instance == nullptr) {
+    if (instance == nullptr) {
         return new Game(GAME_NAME, WIDTH, HEIGHT);
     }
 
-    return Game::instance;
+    return instance;
 }

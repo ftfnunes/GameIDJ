@@ -25,5 +25,4 @@ bool State::QuitRequested() {
 }
 
 State::~State() {
-    Log::LogMessage("Deletando state");
 }

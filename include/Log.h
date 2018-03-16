@@ -5,6 +5,9 @@
 
 using namespace std;
 
+#define TIMESTAMP_FORMAT "%d/%m/%Y-%H:%M:%S "
+#define TIMESTAMP_SIZE 100
+
 class Log {
 public:
     static void LogMessage(string message);

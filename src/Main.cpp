@@ -1,6 +1,14 @@
 #include <iostream>
+#include <Log.h>
 #include "Game.h"
 
 int main(int argc, char **argv) {
-    Game::GetInstance().Run();
+    try {
+        Game::GetInstance().Run();
+    } catch (string ex) {
+        Log::LogError(ex);
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }

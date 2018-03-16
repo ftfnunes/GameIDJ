@@ -16,20 +16,20 @@ Game::Game(string title, int width, int height) {
 
         // Initialize SDL
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
-            Log::LogError("Error initializing SDL");
+            throw "Error initializing SDL";
         }
 
         // Initialize SDL_IMG
         if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) != (IMG_INIT_JPG | IMG_INIT_PNG)) {
-            Log::LogError("Error initializing SDL_Image");
+            throw "Error initializing SDL_Image";
         }
 
         // Initialize SDL_MIXER
         if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG) {
-            Log::LogError("Error initializing SDL_Mixer");
+            throw "Error initializing SDL_Mixer";
         }
         if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) != 0) {
-            Log::LogError("Error while opening audio");
+            throw "Error while opening audio";
         }
         Mix_AllocateChannels(32);
 
@@ -37,19 +37,19 @@ Game::Game(string title, int width, int height) {
         window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                   width, height, 0);
         if (window == nullptr) {
-            Log::LogError("Error while creating window");
+            throw "Error while creating window";
         }
 
         // Create SDL_Renderer
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (renderer == nullptr) {
-            Log::LogError("Error while creating renderer");
+            throw "Error while creating renderer";
         }
 
         //Initialize state
         state = new State();
     } else {
-        Log::LogMessage("There are two instances of game created.");
+        throw "There are two instances of game created.";
     }
 
 }

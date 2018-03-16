@@ -19,7 +19,7 @@ void Music::Play(int times) {
     if (music != nullptr) {
         Mix_PlayMusic(music, times);
     } else {
-        //TODO: Log error
+        throw "No music loaded";
     }
 }
 
@@ -31,7 +31,7 @@ void Music::Open(string file) {
     music = Mix_LoadMUS(file.c_str());
 
     if (music == nullptr) {
-        Log::LogError("error loading music: " + file);
+        throw "error loading music: " + file;
     }
 }
 

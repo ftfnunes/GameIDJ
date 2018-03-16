@@ -1,9 +1,6 @@
 #define INCLUDE_SDL_IMAGE
 
 #include <Game.h>
-#include <Log.h>
-#include "SDL_include.h"
-#include "Sprite.h"
 
 Sprite::Sprite() {
     texture = nullptr;
@@ -27,7 +24,7 @@ void Sprite::Open(string file) {
 
     texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
     if (texture == nullptr) {
-        Log::LogError("Error loading texture from image: " + file);
+        throw "Error loading texture from image: " + file;
     }
 
     SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);

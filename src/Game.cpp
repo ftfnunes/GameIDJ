@@ -1,6 +1,5 @@
 #include <iostream>
 #include <Log.h>
-
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
@@ -74,7 +73,6 @@ State& Game::GetState() {
 }
 
 void Game::Run() {
-    state->LoadAssets();
     while (!state->QuitRequested()) {
         state->Update(0);
         state->Render();

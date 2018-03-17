@@ -16,4 +16,4 @@ add_executable(140039678-Fernando src/Game.cpp
                 src/Main.cpp
                 src/Music.cpp
                 src/Sprite.cpp
-                src/State.cpp)
+                src/State.cpp src/Vector.cpp include/Vector.h)

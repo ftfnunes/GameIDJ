@@ -15,11 +15,13 @@ void Face::Damage(int damage) {
     if (hitpoints <= 0) {
         auto sprite = associated.GetComponent(SPRITE_TYPE);
         if (sprite != nullptr) {
-            Component *sound = associated.GetComponent(SOUND_TYPE);
+            auto sound = (Sound *) associated.GetComponent(SOUND_TYPE);
             if (sound != nullptr) {
-                ((Sound *) sound)->Play();
+                sound->Play();
+                associated.RemoveComponent(sprite);
+            } else {
+                associated.RequestDelete();
             }
-            associated.RemoveComponent(sprite);
         }
     }
 }

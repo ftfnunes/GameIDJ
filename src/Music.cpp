@@ -16,10 +16,11 @@ Music::Music(string file) {
 }
 
 void Music::Play(int times) {
-    if (music != nullptr) {
-        Mix_PlayMusic(music, times);
-    } else {
+    if (music == nullptr) {
         throw "No music loaded";
+    }
+    if (Mix_PlayMusic(music, times) != 0) {
+        throw "There was an error playing the music. Reason: " + string(SDL_GetError());
     }
 }
 
@@ -31,7 +32,7 @@ void Music::Open(string file) {
     music = Mix_LoadMUS(file.c_str());
 
     if (music == nullptr) {
-        throw "error loading music: " + file;
+        throw "Error loading music: " + file + ". Reason: " + string(SDL_GetError());
     }
 }
 

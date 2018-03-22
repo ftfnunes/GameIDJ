@@ -22,7 +22,7 @@ void Sprite::Open(string file) {
         SDL_DestroyTexture(texture);
     }
 
-    texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
+    texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), (ASSETS_PATH + file).c_str());
     if (texture == nullptr) {
         throw "Error loading texture from image: " + file;
     }

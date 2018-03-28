@@ -16,4 +16,4 @@ add_executable(140039678-Fernando src/Game.cpp
                 src/Main.cpp
                 src/Music.cpp
                 src/Sprite.cpp
-                src/State.cpp src/Vector.cpp include/Vector.h)
+                src/State.cpp src/Vec2.cpp include/Vec2.h src/Rect.cpp include/Rect.h src/Component.cpp include/Component.h src/GameObject.cpp include/GameObject.h src/Sound.cpp include/Sound.h src/Face.cpp include/Face.h include/Component.h src/TileSet.cpp include/TileSet.h src/TileMap.cpp include/TileMap.h)

@@ -11,15 +11,12 @@ TileSet::TileSet(int tileWidth, int tileHeight, string file) : tileWidth(tileWid
 
 void TileSet::RenderTile(unsigned int index, float x, float y) {
     int maxRange = columns*rows;
-    if (index < 0 && index > maxRange-1) {
-        throw "indice " + to_string(index) + " esta fora dos limites [0," + to_string(maxRange) +"].";
+    if (index < maxRange-1) {
+        int column = index % columns;
+        int row = index / columns;
+        tileSet.SetClip(column*tileWidth, row*tileHeight, tileWidth, tileHeight);
+        tileSet.Render(x, y);
     }
-
-    int column = index % columns;
-    int row = index / columns;
-
-    tileSet.SetClip(column*tileWidth, row*tileHeight, tileWidth, tileHeight);
-    tileSet.Render(x, y);
 }
 
 int TileSet::GetTileHeight() {

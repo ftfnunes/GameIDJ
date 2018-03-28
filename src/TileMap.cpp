@@ -24,7 +24,8 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
             int y = j*tileSet->GetTileHeight() - cameraY;
             Rect box = associated.box;
             if (x > -tileSet->GetTileWidth() && x < box.w && y > -tileSet->GetTileHeight() && y < box.h) {
-                tileSet->RenderTile(At(i, j, layer), x, y);
+                auto index = At(i, j, layer);
+                tileSet->RenderTile(index, x, y);
             }
         }
     }
@@ -32,7 +33,7 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
 
 void TileMap::Render() {
     for (int z = 0; z < mapDepth; ++z) {
-        RenderLayer(z, associated.box.x, associated.box.y);
+       RenderLayer(z, associated.box.x, associated.box.y);
     }
 }
 
@@ -55,7 +56,7 @@ int TileMap::GetDepth() {
 }
 
 void TileMap::Load(string file) {
-    ifstream f(file);
+    ifstream f(ASSETS_PATH + file);
     string line;
     int w, h, d;
 
@@ -68,6 +69,10 @@ void TileMap::Load(string file) {
             throw "Invalid dimensions on file " + file;
         }
 
+        mapDepth = d;
+        mapHeight = h;
+        mapWidth = w;
+
         for (int i = 0; i < d; ++i) {
             for (int j = 0; j < h; ++j) {
                 if (!getline(f, line)) {
@@ -76,7 +81,11 @@ void TileMap::Load(string file) {
                 string buff{""};
                 for(auto n:line) {
                     if(n != ',') buff+=n; else
-                    if(!buff.empty()) { tileMatrix.push_back(atoi(buff.c_str())-1); buff = ""; }
+                    if(!buff.empty()) {
+                        int c = atoi(buff.c_str())-1;
+                        tileMatrix.push_back(c);
+                        buff = "";
+                    }
                 }
                 if(!buff.empty()) tileMatrix.push_back(atoi(buff.c_str())-1);
             }
@@ -84,5 +93,6 @@ void TileMap::Load(string file) {
                 throw "Error in file format in " + file;
             }
         }
+        cout << "carregado" << endl;
     }
 }

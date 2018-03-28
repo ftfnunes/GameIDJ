@@ -1,6 +1,7 @@
 #include "TileSet.h"
 #include "GameObject.h"
 
+//TODO: how to pass gameobject
 TileSet::TileSet(int tileWidth, int tileHeight, string file) : tileWidth(tileWidth),
                                                                tileHeight(tileHeight),
                                                                tileSet(*new GameObject(), file) {

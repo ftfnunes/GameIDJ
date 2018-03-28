@@ -1,4 +1,5 @@
 #include <Log.h>
+#include <TileMap.h>
 #include "Face.h"
 #include "GameObject.h"
 #include "Sound.h"
@@ -8,9 +9,15 @@
 
 State::State() : music("audio/stageState.ogg") {
     quitRequested = false;
-    GameObject *go = new GameObject();
-    go->AddComponent(new Sprite(*go, "img/ocean.jpg"));
-    objectArray.emplace_back(go);
+
+    GameObject *bg = new GameObject();
+    bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
+    objectArray.emplace_back(bg);
+
+    auto map = new GameObject();
+    auto set = new TileSet(64, 64, "img/tileset.png");
+    map->AddComponent(new TileMap(*map, "maps/tileMap.txt", set));
+    objectArray.emplace_back(map);
 
     music.Play();
 }

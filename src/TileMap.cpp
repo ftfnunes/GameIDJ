@@ -1,5 +1,6 @@
 #include <fstream>
 #include <Game.h>
+#include <GameObject.h>
 #include "TileMap.h"
 
 TileMap::TileMap(GameObject &associated, string file, TileSet *tileSet) : Component(associated),
@@ -21,11 +22,36 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
         for (int j = 0; j < mapHeight; ++j) {
             int x = i*tileSet->GetTileWidth() - cameraX;
             int y = j*tileSet->GetTileHeight() - cameraY;
-            if (x > -tileSet->GetTileWidth() && y > -tileSet->GetTileHeight()) {
+            Rect box = associated.box;
+            if (x > -tileSet->GetTileWidth() && x < box.w && y > -tileSet->GetTileHeight() && y < box.h) {
                 tileSet->RenderTile(At(i, j, layer), x, y);
             }
         }
     }
+}
+
+void TileMap::Render() {
+    for (int z = 0; z < mapDepth; ++z) {
+        RenderLayer(z, associated.box.x, associated.box.y);
+    }
+}
+
+void TileMap::Update(float dt) {}
+
+bool TileMap::Is(string type) {
+    return type == TILE_MAP_TYPE;
+}
+
+int TileMap::GetHeight() {
+    return mapHeight;
+}
+
+int TileMap::GetWidth() {
+    return mapWidth;
+}
+
+int TileMap::GetDepth() {
+    return mapDepth;
 }
 
 void TileMap::Load(string file) {
@@ -50,11 +76,11 @@ void TileMap::Load(string file) {
                 string buff{""};
                 for(auto n:line) {
                     if(n != ',') buff+=n; else
-                    if(n == ',' && buff != "") { tileMatrix.push_back(atoi(buff.c_str())-1); buff = ""; }
+                    if(!buff.empty()) { tileMatrix.push_back(atoi(buff.c_str())-1); buff = ""; }
                 }
-                if(buff != "") tileMatrix.push_back(atoi(buff.c_str())-1);
+                if(!buff.empty()) tileMatrix.push_back(atoi(buff.c_str())-1);
             }
-            if (!getline(f, line) && line != "") {
+            if (!getline(f, line) && line.empty()) {
                 throw "Error in file format in " + file;
             }
         }

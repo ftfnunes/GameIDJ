@@ -1,28 +1,20 @@
 #include <iostream>
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
-#include "Component.h"
 
 using namespace std;
 
 #ifndef SPRITE_CLASS
 #define SPRITE_CLASS
 
-#define SPRITE_TYPE "Sprite"
-
-class Sprite : public Component {
+class Sprite {
 public:
-    Sprite(GameObject &associated);
-    explicit Sprite(GameObject &associated, string file);
-    ~Sprite() override;
-
-    void Update(float dt);
-    bool Is(string type);
-
+    Sprite();
+    Sprite(string file);
+    ~Sprite();
     void Open(string file);
     void SetClip(int x, int y, int w, int h);
-    void Render();
-    void Render(float x, float y);
+    void Render(int x, int y);
     int GetWidth();
     int GetHeight();
     bool IsOpen();

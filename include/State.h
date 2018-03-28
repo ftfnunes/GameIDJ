@@ -1,3 +1,5 @@
+#include <memory>
+#include <vector>
 #include "Sprite.h"
 #include "Music.h"
 
@@ -13,9 +15,11 @@ class State {
     void Update(float dt);
     void Render();
   private:
-    Sprite bg;
+    void Input();
+    void AddObject(int mouseX, int mouseY);
     Music music;
     bool quitRequested;
+    vector<unique_ptr<GameObject>> objectArray;
 };
 
 #endif

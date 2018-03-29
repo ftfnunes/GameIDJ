@@ -8,6 +8,8 @@
 #define WIDTH 1024
 #define HEIGHT 600
 
+#define ASSETS_PATH "assets/"
+
 #ifndef GAME_CLASS
 #define GAME_CLASS
 

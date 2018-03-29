@@ -4,9 +4,6 @@
 #include "Face.h"
 #include "GameObject.h"
 #include "Sound.h"
-#include "Sprite.h"
-#include "Music.h"
-#include "State.h"
 
 State::State() : music("audio/stageState.ogg") {
     quitRequested = false;

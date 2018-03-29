@@ -1,7 +1,7 @@
 #include "TileSet.h"
 #include "GameObject.h"
 
-//TODO: how to pass gameobject
+//TODO: how to pass gameobject to sprite
 TileSet::TileSet(int tileWidth, int tileHeight, string file) : tileWidth(tileWidth),
                                                                tileHeight(tileHeight),
                                                                tileSet(*new GameObject(), file) {
@@ -15,7 +15,7 @@ void TileSet::RenderTile(unsigned int index, float x, float y) {
         int column = index % columns;
         int row = index / columns;
         tileSet.SetClip(column*tileWidth, row*tileHeight, tileWidth, tileHeight);
-        tileSet.Render(x, y);
+        tileSet.Render(x, y, tileWidth, tileHeight);
     }
 }
 

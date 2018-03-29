@@ -24,8 +24,9 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
             int y = j*tileSet->GetTileHeight() - cameraY;
             Rect box = associated.box;
             if (x > -tileSet->GetTileWidth() && x < box.w && y > -tileSet->GetTileHeight() && y < box.h) {
-                auto index = At(i, j, layer);
-                tileSet->RenderTile(index, x, y);
+                tileSet->RenderTile(At(i, j, layer), x, y);
+            } else {
+                break;
             }
         }
     }
@@ -33,7 +34,7 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
 
 void TileMap::Render() {
     for (int z = 0; z < mapDepth; ++z) {
-       RenderLayer(z, associated.box.x, associated.box.y);
+       RenderLayer(0, associated.box.x, associated.box.y);
     }
 }
 
@@ -73,26 +74,35 @@ void TileMap::Load(string file) {
         mapHeight = h;
         mapWidth = w;
 
-        for (int i = 0; i < d; ++i) {
-            for (int j = 0; j < h; ++j) {
+        if (!getline(f, line)) {
+            throw "Error while reading from file " + file;
+        }
+
+        for (int z = 0; z < d; ++z) {
+            for (int i = 0; i < h; ++i) {
                 if (!getline(f, line)) {
                     throw "Error while reading from file " + file;
                 }
+                int j = 0;
                 string buff{""};
                 for(auto n:line) {
+                    if (j == w) break;
                     if(n != ',') buff+=n; else
                     if(!buff.empty()) {
                         int c = atoi(buff.c_str())-1;
+                        j++;
                         tileMatrix.push_back(c);
                         buff = "";
                     }
                 }
                 if(!buff.empty()) tileMatrix.push_back(atoi(buff.c_str())-1);
             }
-            if (!getline(f, line) && line.empty()) {
+            if (!getline(f, line) && !line.empty()) {
                 throw "Error in file format in " + file;
             }
         }
         cout << "carregado" << endl;
+    } else {
+        throw "Erro ao abrir o arquivo " + file;
     }
 }

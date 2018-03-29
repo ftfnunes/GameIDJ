@@ -42,14 +42,15 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.h = h;
 }
 
-void Sprite::Render(float x, float y) {
+void Sprite::Render(float x, float y, float w, float h) {
     Game &game = Game::GetInstance();
-    SDL_Rect dstRect = { x, y, associated.box.w, associated.box.h };
+    SDL_Rect dstRect = { x, y, w, h };
     SDL_RenderCopy(game.GetRenderer(), texture, &clipRect, &dstRect);
 }
 
 void Sprite::Render() {
-    Render(associated.box.x, associated.box.y);
+    auto box = associated.box;
+    Render(box.x, box.y, box.w, box.h);
 }
 
 bool Sprite::IsOpen() {

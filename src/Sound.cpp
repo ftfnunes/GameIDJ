@@ -3,6 +3,7 @@
 //
 
 #include <Log.h>
+#include <Game.h>
 #include "Sound.h"
 
 Sound::Sound(GameObject &associated) : Component(associated), chunk(nullptr), channel(0) {
@@ -26,7 +27,7 @@ void Sound::Stop() {
 }
 
 void Sound::Open(string file) {
-    chunk = Mix_LoadWAV(file.c_str());
+    chunk = Mix_LoadWAV((ASSETS_PATH + file).c_str());
     if (chunk == nullptr) {
         throw "Error loading file: " + file + ". Reason: " + string(SDL_GetError());
     }

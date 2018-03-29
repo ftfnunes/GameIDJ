@@ -2,6 +2,7 @@
 
 #include <Game.h>
 #include <GameObject.h>
+#include <Resources.h>
 
 Sprite::Sprite(GameObject &associated) : Component(associated) {
     texture = nullptr;
@@ -12,21 +13,10 @@ Sprite::Sprite(GameObject &associated, string file) : Component(associated) {
     Open(file);
 }
 
-Sprite::~Sprite() {
-    if (texture != nullptr) {
-        SDL_DestroyTexture(texture);
-    }
-}
+Sprite::~Sprite() {}
 
 void Sprite::Open(string file) {
-    if (IsOpen()) {
-        SDL_DestroyTexture(texture);
-    }
-
-    texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), (ASSETS_PATH + file).c_str());
-    if (texture == nullptr) {
-        throw "Error loading texture from image: " + file;
-    }
+    texture = Resources::GetImage(file);
 
     SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
     associated.box.h = height;

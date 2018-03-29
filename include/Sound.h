@@ -14,12 +14,11 @@ class Sound : public Component {
 public:
     explicit Sound(GameObject &associated);
     Sound(GameObject &associated, string file);
-    ~Sound() override ;
+    ~Sound() override = default;
     void Play(int times = 1);
     void Stop();
     void Open(string file);
     bool IsOpen();
-    bool IsPlaying();
 
     void Update(float dt) override ;
     void Render() override ;

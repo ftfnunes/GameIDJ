@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Log.h>
 #include <Game.h>
+#include <Resources.h>
 
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
@@ -30,11 +31,7 @@ void Music::Stop(int msToStop) {
 }
 
 void Music::Open(string file) {
-    music = Mix_LoadMUS((ASSETS_PATH + file).c_str());
-
-    if (music == nullptr) {
-        throw "Error loading music: " + file + ". Reason: " + string(SDL_GetError());
-    }
+    music = Resources::GetMusic(file);
 }
 
 bool Music::IsOpen() {
@@ -43,5 +40,4 @@ bool Music::IsOpen() {
 
 Music::~Music() {
     Stop(0);
-    Mix_FreeMusic(music);
 }

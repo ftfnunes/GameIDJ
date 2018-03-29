@@ -4,6 +4,7 @@
 
 #include <Log.h>
 #include <Game.h>
+#include <Resources.h>
 #include "Sound.h"
 
 Sound::Sound(GameObject &associated) : Component(associated), chunk(nullptr), channel(0) {
@@ -27,18 +28,11 @@ void Sound::Stop() {
 }
 
 void Sound::Open(string file) {
-    chunk = Mix_LoadWAV((ASSETS_PATH + file).c_str());
-    if (chunk == nullptr) {
-        throw "Error loading file: " + file + ". Reason: " + string(SDL_GetError());
-    }
+    chunk = Resources::GetSound(move(file));
 }
 
 bool Sound::IsOpen() {
     return chunk != nullptr;
-}
-
-bool Sound::IsPlaying() {
-    return Mix_Playing(channel);
 }
 
 bool Sound::Is(string type) {
@@ -48,10 +42,3 @@ bool Sound::Is(string type) {
 void Sound::Update(float dt) {}
 
 void Sound::Render() {}
-
-Sound::~Sound() {
-    if (chunk != nullptr) {
-        Stop();
-    }
-    Mix_FreeChunk(chunk);
-}

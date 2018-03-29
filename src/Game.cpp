@@ -1,4 +1,6 @@
 #include <iostream>
+#include <Resources.h>
+
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 #include "SDL_include.h"
@@ -78,6 +80,9 @@ void Game::Run() {
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
     }
+    Resources::ClearImages();
+    Resources::ClearMusics();
+    Resources::ClearSounds();
 }
 
 SDL_Renderer* Game::GetRenderer() {

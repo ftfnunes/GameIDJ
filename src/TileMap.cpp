@@ -25,8 +25,6 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
             Rect box = associated.box;
             if (x > -tileSet->GetTileWidth() && x < box.w && y > -tileSet->GetTileHeight() && y < box.h) {
                 tileSet->RenderTile(At(i, j, layer), x, y);
-            } else {
-                break;
             }
         }
     }
@@ -34,7 +32,7 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
 
 void TileMap::Render() {
     for (int z = 0; z < mapDepth; ++z) {
-       RenderLayer(0, associated.box.x, associated.box.y);
+       RenderLayer(z, associated.box.x, associated.box.y);
     }
 }
 

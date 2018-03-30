@@ -43,3 +43,7 @@ Vec2 Vec2::Rotate(float angle) {
     float sinO = sin(angle);
     return { x*cosO - y*sinO, x*sinO + y*cosO };
 }
+
+void Vec2::operator+=(Vec2 v) {
+    *this = *this + v;
+}

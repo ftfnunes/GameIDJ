@@ -1,6 +1,7 @@
 #include <fstream>
 #include <Game.h>
 #include <GameObject.h>
+#include <Camera.h>
 #include "TileMap.h"
 
 TileMap::TileMap(GameObject &associated, string file, TileSet *tileSet) : Component(associated),
@@ -32,7 +33,7 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
 
 void TileMap::Render() {
     for (int z = 0; z < mapDepth; ++z) {
-       RenderLayer(z, associated.box.x, associated.box.y);
+       RenderLayer(z, Camera::pos.x, Camera::pos.y);
     }
 }
 

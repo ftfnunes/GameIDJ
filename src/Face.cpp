@@ -3,6 +3,8 @@
 #include <Sound.h>
 #include <zconf.h>
 #include <Sprite.h>
+#include <InputManager.h>
+#include <Camera.h>
 #include "Face.h"
 #include "Component.h"
 
@@ -19,9 +21,17 @@ void Face::Damage(int damage) {
     }
 }
 
-void Face::Update(float dt) {}
+void Face::Update(float dt) {
+    auto inputManager = InputManager::GetInstance();
+    auto camera = Camera::pos;
+    auto mousePos = Vec2(inputManager.GetMouseX() + camera.x, inputManager.GetMouseY() + camera.y);
+    if (inputManager.MousePress(LEFT_MOUSE_BUTTON) && associated.box.Contains(mousePos)) {
+        Damage(rand()%10 + 10);
+    }
+}
 
-void Face::Render() {}
+void Face::Render() {
+}
 
 bool Face::Is(string type) {
     return type == FACE_TYPE;

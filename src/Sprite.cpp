@@ -3,6 +3,7 @@
 #include <Game.h>
 #include <GameObject.h>
 #include <Resources.h>
+#include <Camera.h>
 
 Sprite::Sprite(GameObject &associated) : Component(associated) {
     texture = nullptr;
@@ -40,7 +41,8 @@ void Sprite::Render(float x, float y) {
 
 void Sprite::Render() {
     auto box = associated.box;
-    Render(box.x, box.y);
+    auto camera = Camera::pos;
+    Render(box.x - camera.x, box.y - camera.y);
 }
 
 bool Sprite::IsOpen() {

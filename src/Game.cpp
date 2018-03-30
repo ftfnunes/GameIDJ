@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Resources.h>
+#include <InputManager.h>
 
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
@@ -10,7 +11,7 @@ using namespace std;
 
 Game *Game::instance = nullptr;
 
-Game::Game(string title, int width, int height) {
+Game::Game(string title, int width, int height) : dt(0), framestart(0) {
     if (instance == nullptr) {
         instance = this;
 
@@ -75,7 +76,9 @@ State& Game::GetState() {
 
 void Game::Run() {
     while (!state->QuitRequested()) {
-        state->Update(0);
+        CalculateDeltaTime();
+        InputManager::GetInstance().Update();
+        state->Update(dt);
         state->Render();
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
@@ -95,4 +98,15 @@ Game& Game::GetInstance() {
     }
 
     return *instance;
+}
+
+float Game::GetDeltaTime() {
+    return dt;
+}
+
+void Game::CalculateDeltaTime() {
+    auto ticks = SDL_GetTicks();
+    auto deltaTicks = ticks - framestart;
+    dt = deltaTicks/1000.0f;
+    framestart = ticks;
 }

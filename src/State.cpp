@@ -4,14 +4,12 @@
 #include <InputManager.h>
 #include <Camera.h>
 #include <CameraFollower.h>
-#include "Face.h"
 #include "GameObject.h"
 #include "Sound.h"
 
-State::State() : music("audio/stageState.ogg") {
-    quitRequested = false;
+State::State() : music("audio/stageState.ogg"), quitRequested(false), started(false) {
 
-    GameObject *bg = new GameObject();
+    auto bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
     bg->AddComponent(new CameraFollower(*bg));
     objectArray.emplace_back(bg);
@@ -35,12 +33,6 @@ void State::Update(float dt) {
     Camera::Update(dt);
 
     quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
-
-    if (inputManager.KeyPress(SPACE_BAR_KEY)) {
-        auto objPos = Vec2(inputManager.GetMouseX(), inputManager.GetMouseY()) +
-                Vec2(0, 200).Rotate(M_PI*((rand()%1001)/500.0));
-        AddObject(objPos.x, objPos.y);
-    }
 
     for(int i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
@@ -67,14 +59,32 @@ State::~State() {
     objectArray.clear();
 }
 
-void State::AddObject(int mouseX, int mouseY) {
-    GameObject *go = new GameObject();
-    Sprite *pSprite = new Sprite(*go, "img/penguinface.png");
-    go->box.x = Camera::pos.x + mouseX - go->box.w/2;
-    go->box.y = Camera::pos.y + mouseY - go->box.h/2;
-    go->AddComponent(pSprite);
-    go->AddComponent(new Sound(*go, "audio/boom.wav"));
-    go->AddComponent(new Face(*go));
+void State::Start() {
+    this->LoadAssets();
 
-    objectArray.emplace_back(go);
+    for (auto it = objectArray.begin(); it != objectArray.end(); it++) {
+        (*(*it)).Start();
+    }
+
+    started = true;
+}
+
+weak_ptr<GameObject> State::GetObjectPtr(GameObject *obj) {
+    for(auto it = objectArray.begin(); it != objectArray.end(); ++it) {
+        if ((*it).get() == obj) {
+            return weak_ptr<GameObject>(*it);
+        }
+    }
+    return weak_ptr<GameObject>();
+}
+
+weak_ptr<GameObject> State::AddObject(GameObject *obj) {
+    auto ptr = shared_ptr<GameObject>(obj);
+    objectArray.push_back(ptr);
+
+    if (started) {
+        (*ptr).Start();
+    }
+
+    return weak_ptr<GameObject>(ptr);
 }

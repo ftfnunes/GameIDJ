@@ -11,15 +11,18 @@ class State {
     State();
     ~State();
     bool QuitRequested();
+    void Start();
+    weak_ptr<GameObject> AddObject(GameObject *obj);
+    weak_ptr<GameObject> GetObjectPtr(GameObject *obj);
     void LoadAssets();
     void Update(float dt);
     void Render();
   private:
-    void Input();
-    void AddObject(int mouseX, int mouseY);
+
+    bool started;
     Music music;
     bool quitRequested;
-    vector<unique_ptr<GameObject>> objectArray;
+    vector<shared_ptr<GameObject>> objectArray;
 };
 
 #endif

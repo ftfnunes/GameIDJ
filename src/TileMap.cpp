@@ -100,7 +100,6 @@ void TileMap::Load(string file) {
                 throw "Error in file format in " + file;
             }
         }
-        cout << "carregado" << endl;
     } else {
         throw "Erro ao abrir o arquivo " + file;
     }

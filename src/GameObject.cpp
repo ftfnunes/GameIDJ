@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "GameObject.h"
 
-GameObject::GameObject() : isDead(false) {
+GameObject::GameObject() : isDead(false), started(false) {
 }
 
 GameObject::~GameObject() {
@@ -31,6 +31,9 @@ void GameObject::RequestDelete() {
 }
 
 void GameObject::AddComponent(Component *cpt) {
+    if (started) {
+        cpt->Start();
+    }
     components.emplace_back(cpt);
 }
 
@@ -46,4 +49,11 @@ Component *GameObject::GetComponent(string type) {
         }
     }
     return nullptr;
+}
+
+void GameObject::Start() {
+    for(auto it = components.begin(); it != components.end(); ++it) {
+        (*(*it)).Start();
+    }
+    started = true;
 }

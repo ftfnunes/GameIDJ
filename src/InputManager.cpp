@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <Camera.h>
 #include "InputManager.h"
 
 InputManager::InputManager() : quitRequested(false), updateCounter(0), mouseX(0), mouseY(0)  {
@@ -70,4 +71,12 @@ InputManager &InputManager::GetInstance() {
     static InputManager manager;
 
     return manager;
+}
+
+int InputManager::getMouseXWithCamera() {
+    return mouseX + Camera::pos.x;
+}
+
+int InputManager::getMouseYWithCamera() {
+    return mouseY + Camera::pos.y;
 }

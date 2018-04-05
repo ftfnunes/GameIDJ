@@ -4,6 +4,7 @@
 #include <InputManager.h>
 #include <Camera.h>
 #include <CameraFollower.h>
+#include <Alien.h>
 #include "GameObject.h"
 #include "Sound.h"
 
@@ -17,10 +18,16 @@ State::State() : music("audio/stageState.ogg"), quitRequested(false), started(fa
     auto map = new GameObject();
     map->box.h = HEIGHT;
     map->box.w = WIDTH;
-
     auto set = new TileSet(64, 64, "img/tileset.png");
     map->AddComponent(new TileMap(*map, "map/tileMap.txt", set));
     objectArray.emplace_back(map);
+
+    auto alienObject = new GameObject();
+    alienObject->box.x = 512;
+    alienObject->box.y = 300;
+    auto alien = new Alien(*alienObject, 3);
+    alienObject->AddComponent(alien);
+    objectArray.emplace_back(alienObject);
 
     music.Play();
 }

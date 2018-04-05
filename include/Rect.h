@@ -17,6 +17,7 @@ public:
 
     //Overloaded operators
     Rect operator+(Vec2 v2);
+    void operator+=(Vec2 v2);
 };
 
 

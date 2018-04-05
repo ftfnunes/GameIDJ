@@ -11,6 +11,9 @@
 #include <memory>
 #include "Vec2.h"
 
+#define ALIEN_TYPE "Alien"
+#define ALIEN_SPEED 100
+
 class Alien : public Component {
 public:
     explicit Alien(GameObject &associated, int nMinions);
@@ -25,6 +28,7 @@ public:
     bool Is(string type) override;
 private:
     class Action {
+    public:
         enum ActionType { MOVE, SHOOT };
 
         Action(ActionType type, float x, float y);

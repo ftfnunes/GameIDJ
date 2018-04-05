@@ -1,5 +1,6 @@
 #include <Sprite.h>
 #include <InputManager.h>
+#include <search.h>
 #include "Alien.h"
 
 Alien::Alien(GameObject &associated, int nMinions) : Component(associated) {
@@ -12,9 +13,31 @@ Alien::Alien(GameObject &associated, int nMinions) : Component(associated) {
 
 void Alien::Update(float dt) {
     auto inputManager = InputManager::GetInstance();
+    auto x = inputManager.getMouseXWithCamera();
+    auto y = inputManager.getMouseYWithCamera();
 
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
+        taskQueue.push(Action(Action::SHOOT, x, y));
+    }
+    if (inputManager.MousePress(RIGHT_MOUSE_BUTTON)) {
+        taskQueue.push(Action(Action::MOVE, x, y));
+    }
+
+    if (!taskQueue.empty()) {
+        auto action = taskQueue.front();
         
+        if (action.type == Action::MOVE) {
+            auto dMod = ALIEN_SPEED*dt;
+            auto d = Vec2(dMod, 0);
+            auto newPos = associated.box + d;
+
+            if (newPos.Center() - associated.box.Center()) {
+            }
+
+
+        } else {
+
+        }
     }
 }
 
@@ -34,4 +57,6 @@ Alien::Action::Action(Alien::Action::ActionType type, float x, float y) {
 
 }
 
-Alien::~Alien() {}
+Alien::~Alien() {
+
+}

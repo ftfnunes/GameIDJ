@@ -11,7 +11,7 @@ Face::Face(GameObject &associated) : Component(associated) {
 }
 
 void Face::Damage(int damage) {
-    if (hitpoints > 0) { 
+    if (hitpoints > 0) {
         hitpoints -= damage;
         if (hitpoints <= 0) {
             auto sound = (Sound *) associated.GetComponent(SOUND_TYPE);

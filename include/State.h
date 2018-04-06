@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include "Music.h"
+#include "TileMap.h"
 
 #ifndef STATE_CLASS
 #define STATE_CLASS
@@ -19,6 +20,7 @@ class State {
     Music music;
     bool quitRequested;
     TileMap *tileMap;
+    GameObject *bg;
     map<int, vector<unique_ptr<GameObject>>> objectArray;
 };
 

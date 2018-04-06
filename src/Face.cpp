@@ -11,17 +11,19 @@ Face::Face(GameObject &associated) : Component(associated) {
 }
 
 void Face::Damage(int damage) {
-    hitpoints -= damage;
-    if (hitpoints <= 0) {
-        auto sound = (Sound *) associated.GetComponent(SOUND_TYPE);
-        if (sound != nullptr) {
-            sound->Play();
-            auto sprite = associated.GetComponent(SPRITE_TYPE);
-            if (sprite != nullptr) {
-                associated.RemoveComponent(sprite);
+    if (hitpoints > 0) { 
+        hitpoints -= damage;
+        if (hitpoints <= 0) {
+            auto sound = (Sound *) associated.GetComponent(SOUND_TYPE);
+            if (sound != nullptr) {
+                sound->Play();
+                auto sprite = associated.GetComponent(SPRITE_TYPE);
+                if (sprite != nullptr) {
+                    associated.RemoveComponent(sprite);
+                }
+            } else {
+                associated.RequestDelete();
             }
-        } else {
-            associated.RequestDelete();
         }
     }
 }

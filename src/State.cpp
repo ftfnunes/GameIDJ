@@ -8,7 +8,7 @@
 
 State::State() : music("audio/stageState.ogg") {
     quitRequested = false;
-    GameObject *go = new GameObject();
+    auto *go = new GameObject();
     go->AddComponent(new Sprite(*go, "img/ocean.jpg"));
     objectArray.emplace_back(go);
 

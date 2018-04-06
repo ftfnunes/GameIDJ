@@ -14,7 +14,7 @@ Minion::Minion(GameObject &associated,
     auto sprite = new Sprite(associated, "img/minion.png");
     associated.AddComponent(sprite);
 
-    
+
 }
 
 void Minion::Update(float dt) {

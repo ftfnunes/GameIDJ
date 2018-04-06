@@ -6,8 +6,8 @@
 #include <Game.h>
 #include "Camera.h"
 
-Vec2 Camera::pos;
-Vec2 Camera::speed;
+Vec2 Camera::pos = Vec2();
+Vec2 Camera::speed = Vec2();
 GameObject *Camera::focus = nullptr;
 
 
@@ -21,17 +21,18 @@ void Camera::Unfollow() {
 
 void Camera::Update(float dt) {
     if (focus != nullptr) {
-        pos = Vec2(focus->box.x - WIDTH/2, focus->box.y - HEIGHT/2);
+        auto center = focus->box.Center();
+        pos = Vec2(center.x - WIDTH/2, center.y - HEIGHT/2);
     } else {
         auto inputManager = InputManager::GetInstance();
 
         speed = Vec2();
         if (inputManager.IsKeyDown(LEFT_ARROW_KEY)) {
-            speed = Vec2(CAMERA_SPEED*dt, 0).Rotate(M_PI);
+            speed = Vec2(-CAMERA_SPEED*dt, 0);
         } else if (inputManager.IsKeyDown(DOWN_ARROW_KEY)) {
-            speed = Vec2(CAMERA_SPEED*dt, 0).Rotate(M_PI/2);
+            speed = Vec2(0, CAMERA_SPEED*dt);
         } else if (inputManager.IsKeyDown(UP_ARROW_KEY)) {
-            speed = Vec2(CAMERA_SPEED*dt, 0).Rotate(-M_PI/2);
+            speed = Vec2(0, -CAMERA_SPEED*dt);
         } else if (inputManager.IsKeyDown(RIGHT_ARROW_KEY)) {
             speed = Vec2(CAMERA_SPEED*dt, 0);
         }

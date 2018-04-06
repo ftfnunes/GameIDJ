@@ -14,15 +14,15 @@ State::State() : music("audio/stageState.ogg") {
     GameObject *bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
     bg->AddComponent(new CameraFollower(*bg));
-    objectArray.emplace_back(bg);
+    objectArray[0].emplace_back(bg);
 
-    auto map = new GameObject();
-    map->box.h = HEIGHT;
-    map->box.w = WIDTH;
+    auto mapObject = new GameObject();
+    mapObject->box.h = HEIGHT;
+    mapObject->box.w = WIDTH;
 
     auto set = new TileSet(64, 64, "img/tileset.png");
-    map->AddComponent(new TileMap(*map, "map/tileMap.txt", set));
-    objectArray.emplace_back(map);
+    tileMap = new TileMap(*mapObject, "map/tileMap.txt", set);
+    mapObject->AddComponent(tileMap);
 
     music.Play();
 }
@@ -42,6 +42,9 @@ void State::Update(float dt) {
         AddObject(objPos.x, objPos.y);
     }
 
+    for ( auto it = objectArray.begin(); it != objectArray.end(); it++) {
+        tileMap->RenderLayer()
+    }
     for(int i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
     }

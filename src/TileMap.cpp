@@ -18,6 +18,8 @@ int& TileMap::At(int x, int y, int z) {
     return tileMatrix[index];
 }
 
+
+
 void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
     for (int i = 0; i < mapWidth; i++) {
         for (int j = 0; j < mapHeight; ++j) {

@@ -29,8 +29,10 @@ void State::LoadAssets() {
 
 void State::Update(float dt) {
     auto inputManager = InputManager::GetInstance();
+
     Camera::Update(dt);
     bg->Update(dt);
+
     quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
 
     if (inputManager.KeyPress(SPACE_BAR_KEY)) {

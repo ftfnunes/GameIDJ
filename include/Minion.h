@@ -5,10 +5,16 @@
 #ifndef T1_MINION_H
 #define T1_MINION_H
 
-
-#include "GameObject.h"
+#include "Vec2.h"
+#include <memory>
 
 #define MINION_ANG_SPEED M_PI/6
+#define ORBIT_RADIUS 100
+#define MINION_TYPE "Minion"
+
+#define MINION_BULLET_SPEED 100
+#define MINION_BULLET_DISTANCE 600
+#define MINION_BULLET_DAMAGE 10
 
 class Minion : public Component {
 public:

@@ -6,6 +6,7 @@
 
 int main(int argc, char **argv) {
     try {
+        srand(time(NULL));
         Game::GetInstance().Run();
     } catch (string ex) {
         Log::LogError(ex);

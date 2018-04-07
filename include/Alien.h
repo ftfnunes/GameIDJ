@@ -13,6 +13,7 @@
 
 #define ALIEN_TYPE "Alien"
 #define ALIEN_SPEED 100
+#define ALIEN_ROTATION_SPEED -10
 
 class Alien : public Component {
 public:
@@ -39,6 +40,7 @@ private:
 
     Vec2 speed;
     int hp;
+    int nMinions;
 
     queue<Action> taskQueue;
     vector<weak_ptr<GameObject>> minionArray;

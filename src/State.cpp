@@ -92,8 +92,8 @@ void State::Start() {
     this->LoadAssets();
     for (auto &objLayer : objectArray) {
         auto &objects = objLayer.second;
-        for (auto it = objects.begin(); it != objects.end(); it++) {
-            (*(*it)).Start();
+        for (int i = 0; i < objects.size(); i++) {
+            (*objects[i]).Start();
         }
     }
 

@@ -21,7 +21,9 @@ public:
     void AddComponent(Component* cpt);
     void RemoveComponent(Component* cpt);
     Component *GetComponent(string type);
+
     Rect box;
+    double angleDeg;
 private:
     vector<unique_ptr<Component>> components;
     bool isDead;

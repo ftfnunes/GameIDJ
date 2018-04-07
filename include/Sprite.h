@@ -2,6 +2,7 @@
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 #include "Component.h"
+#include "Vec2.h"
 
 using namespace std;
 
@@ -25,12 +26,15 @@ public:
     void Render(float x, float y);
     int GetWidth();
     int GetHeight();
+    void SetScaleX(float scaleX, float scaleY);
+    Vec2 GetScale();
     bool IsOpen();
 private:
     SDL_Texture *texture;
     int width;
     int height;
     SDL_Rect clipRect;
+    Vec2 scale;
 };
 
 #endif

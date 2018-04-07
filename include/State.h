@@ -1,7 +1,8 @@
 #include <memory>
 #include <vector>
-#include "Sprite.h"
+#include <map>
 #include "Music.h"
+#include "TileMap.h"
 
 #ifndef STATE_CLASS
 #define STATE_CLASS
@@ -13,16 +14,18 @@ class State {
     bool QuitRequested();
     void Start();
     weak_ptr<GameObject> AddObject(GameObject *obj);
+    weak_ptr<GameObject> AddObject(GameObject *obj, int layer);
     weak_ptr<GameObject> GetObjectPtr(GameObject *obj);
     void LoadAssets();
     void Update(float dt);
     void Render();
   private:
-
-    bool started;
     Music music;
     bool quitRequested;
-    vector<shared_ptr<GameObject>> objectArray;
+    bool started;
+    TileMap *tileMap;
+    GameObject *bg;
+    map<int, vector<shared_ptr<GameObject>>> objectArray;
 };
 
 #endif

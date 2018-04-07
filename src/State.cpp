@@ -1,33 +1,35 @@
 #include <Log.h>
-#include <TileMap.h>
 #include <Game.h>
 #include <InputManager.h>
 #include <Camera.h>
 #include <CameraFollower.h>
 #include <Alien.h>
-#include "GameObject.h"
 #include "Sound.h"
 
-State::State() : music("audio/stageState.ogg"), quitRequested(false), started(false) {
 
-    auto bg = new GameObject();
+State::State() : music("audio/stageState.ogg"),
+                 quitRequested(false),
+                 started(false),
+                 tileMap(nullptr),
+                 bg(nullptr) {
+
+    bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
     bg->AddComponent(new CameraFollower(*bg));
-    objectArray.emplace_back(bg);
 
-    auto map = new GameObject();
-    map->box.h = HEIGHT;
-    map->box.w = WIDTH;
+    auto mapObject = new GameObject();
+    mapObject->box.h = HEIGHT;
+    mapObject->box.w = WIDTH;
+
     auto set = new TileSet(64, 64, "img/tileset.png");
-    map->AddComponent(new TileMap(*map, "map/tileMap.txt", set));
-    objectArray.emplace_back(map);
+    tileMap = new TileMap(*mapObject, "map/tileMap.txt", set);
+    mapObject->AddComponent(tileMap);
 
     auto alienObject = new GameObject();
-    alienObject->box.x = 512;
-    alienObject->box.y = 300;
+    alienObject->box = Rect(512, 300, 0, 0);
     auto alien = new Alien(*alienObject, 3);
     alienObject->AddComponent(alien);
-    objectArray.emplace_back(alienObject);
+    AddObject(alienObject);
 
     music.Play();
 }
@@ -37,24 +39,44 @@ void State::LoadAssets() {
 
 void State::Update(float dt) {
     auto inputManager = InputManager::GetInstance();
+
     Camera::Update(dt);
+    bg->Update(dt);
 
     quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
 
-    for(int i = 0; i < objectArray.size(); i++) {
-        objectArray[i]->Update(dt);
+    for (auto &it : objectArray) {
+        auto &objects = it.second;
+
+        for (int i = 0; i < objects.size(); ++i) {
+            objects[i]->Update(dt);
+        }
     }
 
-    for(int i = 0; i < objectArray.size(); i++) {
-        if (objectArray[i]->IsDead()) {
-            objectArray.erase(objectArray.begin()+i);
+    for (auto &it: objectArray) {
+        auto &objects = it.second;
+
+        for(int i = 0; i < objects.size(); i++) {
+            if (objects[i]->IsDead()) {
+                objects.erase(objects.begin() + i);
+            }
         }
     }
 }
 
 void State::Render() {
-    for(auto it = objectArray.begin(); it != objectArray.end(); ++it) {
-        (*it)->Render();
+    bg->Render();
+    for (int i = 0; i < tileMap->GetDepth(); i++) {
+        auto it = objectArray.find(i);
+        tileMap->RenderLayer(i, Camera::pos.x, Camera::pos.y);
+
+        if (it != objectArray.end()) {
+            auto &objects = (*it).second;
+
+            for (auto &object : objects) {
+                object->Render();
+            }
+        }
     }
 }
 
@@ -68,30 +90,43 @@ State::~State() {
 
 void State::Start() {
     this->LoadAssets();
-
-    for (auto it = objectArray.begin(); it != objectArray.end(); it++) {
-        (*(*it)).Start();
+    for (auto &objLayer : objectArray) {
+        auto &objects = objLayer.second;
+        for (auto it = objects.begin(); it != objects.end(); it++) {
+            (*(*it)).Start();
+        }
     }
+
 
     started = true;
 }
 
 weak_ptr<GameObject> State::GetObjectPtr(GameObject *obj) {
-    for(auto it = objectArray.begin(); it != objectArray.end(); ++it) {
-        if ((*it).get() == obj) {
-            return weak_ptr<GameObject>(*it);
+    for (auto &objLayer : objectArray) {
+        auto &objects = objLayer.second;
+        for(auto it = objects.begin(); it != objects.end(); ++it) {
+            if ((*it).get() == obj) {
+                return weak_ptr<GameObject>(*it);
+            }
         }
     }
+
     return weak_ptr<GameObject>();
 }
 
-weak_ptr<GameObject> State::AddObject(GameObject *obj) {
+
+
+weak_ptr<GameObject> State::AddObject(GameObject *obj, int layer) {
     auto ptr = shared_ptr<GameObject>(obj);
-    objectArray.push_back(ptr);
+    objectArray[layer].push_back(ptr);
 
     if (started) {
         (*ptr).Start();
     }
 
     return weak_ptr<GameObject>(ptr);
+}
+
+weak_ptr<GameObject> State::AddObject(GameObject *obj) {
+    return AddObject(obj, 0);
 }

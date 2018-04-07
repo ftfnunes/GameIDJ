@@ -1,28 +1,25 @@
 #include <Log.h>
-#include <TileMap.h>
 #include <Game.h>
 #include <InputManager.h>
 #include <Camera.h>
 #include <CameraFollower.h>
 #include "Face.h"
-#include "GameObject.h"
 #include "Sound.h"
 
-State::State() : music("audio/stageState.ogg") {
+State::State() : music("audio/stageState.ogg"), tileMap(nullptr), bg(nullptr) {
     quitRequested = false;
 
-    GameObject *bg = new GameObject();
+    bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
     bg->AddComponent(new CameraFollower(*bg));
-    objectArray.emplace_back(bg);
 
-    auto map = new GameObject();
-    map->box.h = HEIGHT;
-    map->box.w = WIDTH;
+    auto mapObject = new GameObject();
+    mapObject->box.h = HEIGHT;
+    mapObject->box.w = WIDTH;
 
     auto set = new TileSet(64, 64, "img/tileset.png");
-    map->AddComponent(new TileMap(*map, "map/tileMap.txt", set));
-    objectArray.emplace_back(map);
+    tileMap = new TileMap(*mapObject, "map/tileMap.txt", set);
+    mapObject->AddComponent(tileMap);
 
     music.Play();
 }
@@ -32,7 +29,9 @@ void State::LoadAssets() {
 
 void State::Update(float dt) {
     auto inputManager = InputManager::GetInstance();
+
     Camera::Update(dt);
+    bg->Update(dt);
 
     quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
 
@@ -42,20 +41,38 @@ void State::Update(float dt) {
         AddObject(objPos.x, objPos.y);
     }
 
-    for(int i = 0; i < objectArray.size(); i++) {
-        objectArray[i]->Update(dt);
+    for (auto &it : objectArray) {
+        auto &objects = it.second;
+
+        for (int i = 0; i < objects.size(); ++i) {
+            objects[i]->Update(dt);
+        }
     }
 
-    for(int i = 0; i < objectArray.size(); i++) {
-        if (objectArray[i]->IsDead()) {
-            objectArray.erase(objectArray.begin()+i);
+    for (auto &it: objectArray) {
+        auto &objects = it.second;
+
+        for(int i = 0; i < objects.size(); i++) {
+            if (objects[i]->IsDead()) {
+                objects.erase(objects.begin() + i);
+            }
         }
     }
 }
 
 void State::Render() {
-    for(auto it = objectArray.begin(); it != objectArray.end(); ++it) {
-        (*it)->Render();
+    bg->Render();
+    for (int i = 0; i < tileMap->GetDepth(); i++) {
+        auto it = objectArray.find(i);
+        tileMap->RenderLayer(i, Camera::pos.x, Camera::pos.y);
+
+        if (it != objectArray.end()) {
+            auto &objects = (*it).second;
+
+            for (auto &object : objects) {
+                object->Render();
+            }
+        }
     }
 }
 
@@ -68,7 +85,7 @@ State::~State() {
 }
 
 void State::AddObject(int mouseX, int mouseY) {
-    GameObject *go = new GameObject();
+    auto *go = new GameObject();
     Sprite *pSprite = new Sprite(*go, "img/penguinface.png");
     go->box.x = Camera::pos.x + mouseX - go->box.w/2;
     go->box.y = Camera::pos.y + mouseY - go->box.h/2;
@@ -76,5 +93,5 @@ void State::AddObject(int mouseX, int mouseY) {
     go->AddComponent(new Sound(*go, "audio/boom.wav"));
     go->AddComponent(new Face(*go));
 
-    objectArray.emplace_back(go);
+    objectArray[0].emplace_back(go);
 }

@@ -1,7 +1,8 @@
 #include <memory>
 #include <vector>
-#include "Sprite.h"
+#include <map>
 #include "Music.h"
+#include "TileMap.h"
 
 #ifndef STATE_CLASS
 #define STATE_CLASS
@@ -15,11 +16,12 @@ class State {
     void Update(float dt);
     void Render();
   private:
-    void Input();
     void AddObject(int mouseX, int mouseY);
     Music music;
     bool quitRequested;
-    vector<unique_ptr<GameObject>> objectArray;
+    TileMap *tileMap;
+    GameObject *bg;
+    map<int, vector<unique_ptr<GameObject>>> objectArray;
 };
 
 #endif

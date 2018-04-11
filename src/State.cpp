@@ -13,6 +13,8 @@ State::State() : music("audio/stageState.ogg"),
                  tileMap(nullptr),
                  bg(nullptr) {
 
+    Camera::SetModifier(1, 1.4);
+
     bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
     bg->AddComponent(new CameraFollower(*bg));
@@ -29,7 +31,7 @@ State::State() : music("audio/stageState.ogg"),
     alienObject->box = Rect(512, 300, 0, 0);
     auto alien = new Alien(*alienObject, 3);
     alienObject->AddComponent(alien);
-    AddObject(alienObject);
+    AddObject(alienObject, 1);
 
     music.Play();
 }
@@ -68,7 +70,8 @@ void State::Render() {
     bg->Render();
     for (int i = 0; i < tileMap->GetDepth(); i++) {
         auto it = objectArray.find(i);
-        tileMap->RenderLayer(i, Camera::pos.x, Camera::pos.y);
+        auto cameraPos = Camera::GetPosWithModifier(i);
+        tileMap->RenderLayer(i, cameraPos.x, cameraPos.y);
 
         if (it != objectArray.end()) {
             auto &objects = (*it).second;
@@ -118,6 +121,8 @@ weak_ptr<GameObject> State::GetObjectPtr(GameObject *obj) {
 
 weak_ptr<GameObject> State::AddObject(GameObject *obj, int layer) {
     auto ptr = shared_ptr<GameObject>(obj);
+
+    obj->SetLayer(layer);
     objectArray[layer].push_back(ptr);
 
     if (started) {

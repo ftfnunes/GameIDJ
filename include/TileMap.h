@@ -19,7 +19,6 @@ public:
     void Update(float dt) override;
     bool Is(string type) override;
 
-
     void RenderLayer(int layer, int cameraX = 0, int cameraY = 0);
     int GetWidth();
     int GetHeight();
@@ -30,7 +29,6 @@ private:
     int mapWidth;
     int mapHeight;
     int mapDepth;
-
 };
 
 

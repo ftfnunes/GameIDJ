@@ -9,6 +9,7 @@
 Vec2 Camera::pos = Vec2();
 Vec2 Camera::speed = Vec2();
 GameObject *Camera::focus = nullptr;
+unordered_map<int, float> Camera::modifiers;
 
 
 void Camera::Follow(GameObject *newFocus) {
@@ -38,4 +39,14 @@ void Camera::Update(float dt) {
         }
         pos += speed;
     }
+}
+
+void Camera::SetModifier(int layer, float modifier) {
+    modifiers[layer] = modifier;
+}
+
+Vec2 Camera::GetPosWithModifier(int layer) {
+    auto it = modifiers.find(layer);
+
+    return it == modifiers.end() ? pos : pos*((*it).second);
 }

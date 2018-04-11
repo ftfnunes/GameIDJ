@@ -7,7 +7,7 @@
 
 
 #include "GameObject.h"
-
+#include <unordered_map>
 #define CAMERA_SPEED 600
 
 class Camera {
@@ -16,11 +16,14 @@ public:
     static void Unfollow();
     static void Update(float dt);
 
+    static void SetModifier(int layer, float modifier);
+    static Vec2 GetPosWithModifier(int layer);
+
     static Vec2 pos;
     static Vec2 speed;
 private:
     static GameObject *focus;
-
+    static unordered_map<int, float> modifiers;
 };
 
 

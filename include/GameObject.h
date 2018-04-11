@@ -22,12 +22,16 @@ public:
     void RemoveComponent(Component* cpt);
     Component *GetComponent(string type);
 
+    int GetLayer();
+    void SetLayer(int layer);
+
     Rect box;
     double angleDeg;
 private:
     vector<unique_ptr<Component>> components;
     bool isDead;
     bool started;
+    int layer;
 };
 
 #endif //T1_GAMEOBJECT_H

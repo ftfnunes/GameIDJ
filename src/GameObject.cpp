@@ -57,3 +57,11 @@ void GameObject::Start() {
     }
     started = true;
 }
+
+int GameObject::GetLayer() {
+    return layer;
+}
+
+void GameObject::SetLayer(int layer) {
+    this->layer = layer;
+}

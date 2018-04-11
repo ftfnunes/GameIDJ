@@ -2,7 +2,7 @@
 #include <Game.h>
 #include <GameObject.h>
 #include <Camera.h>
-#include "TileMap.h"
+#include <LayerModifier.h>
 
 TileMap::TileMap(GameObject &associated, string file, TileSet *tileSet) : Component(associated),
                                                                           tileSet(tileSet) {
@@ -23,8 +23,8 @@ int& TileMap::At(int x, int y, int z) {
 void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
     for (int i = 0; i < mapWidth; i++) {
         for (int j = 0; j < mapHeight; ++j) {
-            int x = i*tileSet->GetTileWidth() - cameraX - 0.4*(layer)*cameraX;
-            int y = j*tileSet->GetTileHeight() - cameraY - 0.4*(layer)*cameraY;
+            int x = i*tileSet->GetTileWidth() - cameraX;
+            int y = j*tileSet->GetTileHeight() - cameraY;
             Rect box = associated.box;
             if (x > -tileSet->GetTileWidth() && x < box.w && y > -tileSet->GetTileHeight() && y < box.h) {
                 tileSet->RenderTile(At(i, j, layer), x, y);

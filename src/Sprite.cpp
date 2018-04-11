@@ -46,7 +46,7 @@ void Sprite::Render(float x, float y) {
 
 void Sprite::Render() {
     auto box = associated.box;
-    auto camera = Camera::pos;
+    auto camera = Camera::GetPosWithModifier(associated.GetLayer());
     Render(box.x - camera.x, box.y - camera.y);
 }
 

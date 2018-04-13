@@ -9,7 +9,8 @@
 Vec2 Camera::pos = Vec2();
 Vec2 Camera::speed = Vec2();
 GameObject *Camera::focus = nullptr;
-unordered_map<int, float> Camera::modifiers;
+unordered_map<int, float> Camera::layerHeights;
+float Camera::cameraHeight = 0;
 
 
 void Camera::Follow(GameObject *newFocus) {
@@ -41,12 +42,22 @@ void Camera::Update(float dt) {
     }
 }
 
-void Camera::SetModifier(int layer, float modifier) {
-    modifiers[layer] = modifier;
+void Camera::SetLayerHeight(int layer, float height) {
+    layerHeights[layer] = height;
 }
 
-Vec2 Camera::GetPosWithModifier(int layer) {
-    auto it = modifiers.find(layer);
+Vec2 Camera::GetRenderPosition(int layer, Vec2 absolutePos) {
+    auto result = absolutePos - pos;
+    auto height = layerHeights.find(layer);
 
-    return it == modifiers.end() ? pos : pos*((*it).second);
+    if (height != layerHeights.end()) {
+
+    }
+
+    return result;
 }
+
+void Camera::SetCameraHeight(float height) {
+    height = cameraHeight;
+}
+

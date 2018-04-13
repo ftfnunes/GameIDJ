@@ -74,6 +74,7 @@ InputManager &InputManager::GetInstance() {
 }
 
 int InputManager::getMouseXWithCamera() {
+
     return mouseX + Camera::pos.x;
 }
 

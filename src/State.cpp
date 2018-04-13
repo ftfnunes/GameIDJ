@@ -27,7 +27,7 @@ State::State() : music("audio/stageState.ogg"),
     tileMap = new TileMap(*mapObject, "map/tileMap.txt", set);
     mapObject->AddComponent(tileMap);
 
-    auto alienObject = new GameObject();
+    auto alienObject = new GameObject(1);
     alienObject->box = Rect(512, 300, 0, 0);
     auto alien = new Alien(*alienObject, 3);
     alienObject->AddComponent(alien);
@@ -119,8 +119,6 @@ weak_ptr<GameObject> State::GetObjectPtr(GameObject *obj) {
     return weak_ptr<GameObject>();
 }
 
-
-
 weak_ptr<GameObject> State::AddObject(GameObject *obj) {
     auto ptr = shared_ptr<GameObject>(obj);
 
@@ -148,6 +146,7 @@ shared_ptr<GameObject> State::PopObjectPtr(GameObject *obj) {
             return object;
         }
     }
+
     return shared_ptr<GameObject>();
 }
 

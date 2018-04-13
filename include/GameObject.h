@@ -11,6 +11,7 @@ using namespace std;
 class GameObject {
 public:
     GameObject();
+    GameObject(int layer);
     ~GameObject();
 
     void Update(float dt);

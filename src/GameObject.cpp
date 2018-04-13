@@ -2,8 +2,13 @@
 #include <Game.h>
 #include "GameObject.h"
 
-GameObject::GameObject() : isDead(false), started(false), angleDeg(0), layer(0) {
-}
+GameObject::GameObject() : GameObject(0) {}
+
+
+GameObject::GameObject(int layer) : isDead(false),
+                                    started(false),
+                                    angleDeg(0),
+                                    layer(layer) {}
 
 GameObject::~GameObject() {
     for(auto it = components.rbegin(); it != components.rend(); ++it) {
@@ -70,8 +75,9 @@ void GameObject::SetLayer(int layer) {
     auto &state = Game::GetInstance().GetState();
     auto obj = state.PopObjectPtr(this);
     this->layer = layer;
-    state.AddObject(obj);
-
+    if (obj) {
+        state.AddObject(obj);
+    }
 }
 
 bool GameObject::HasStarted() {

@@ -4,7 +4,7 @@
 #include <Camera.h>
 #include <CameraFollower.h>
 #include <Alien.h>
-#include "Sound.h"
+#include <algorithm>
 
 
 State::State() : music("audio/stageState.ogg"),
@@ -31,7 +31,7 @@ State::State() : music("audio/stageState.ogg"),
     alienObject->box = Rect(512, 300, 0, 0);
     auto alien = new Alien(*alienObject, 3);
     alienObject->AddComponent(alien);
-    AddObject(alienObject, 1);
+    AddObject(alienObject);
 
     music.Play();
 }
@@ -51,7 +51,10 @@ void State::Update(float dt) {
         auto &objects = it.second;
 
         for (int i = 0; i < objects.size(); ++i) {
-            objects[i]->Update(dt);
+            auto obj = objects[i];
+            if (!obj->IsUpdated()) {
+                obj->Update(dt);
+            }
         }
     }
 
@@ -105,12 +108,11 @@ void State::Start() {
 }
 
 weak_ptr<GameObject> State::GetObjectPtr(GameObject *obj) {
-    for (auto &objLayer : objectArray) {
-        auto &objects = objLayer.second;
-        for(auto it = objects.begin(); it != objects.end(); ++it) {
-            if ((*it).get() == obj) {
-                return weak_ptr<GameObject>(*it);
-            }
+
+    auto &objects = objectArray[obj->GetLayer()];
+    for (auto &object : objects) {
+        if (object.get() == obj) {
+            return weak_ptr<GameObject>(object);
         }
     }
 
@@ -119,19 +121,33 @@ weak_ptr<GameObject> State::GetObjectPtr(GameObject *obj) {
 
 
 
-weak_ptr<GameObject> State::AddObject(GameObject *obj, int layer) {
+weak_ptr<GameObject> State::AddObject(GameObject *obj) {
     auto ptr = shared_ptr<GameObject>(obj);
 
-    obj->SetLayer(layer);
-    objectArray[layer].push_back(ptr);
+    return AddObject(ptr);
+}
 
-    if (started) {
+weak_ptr<GameObject> State::AddObject(shared_ptr<GameObject> ptr) {
+
+    objectArray[(*ptr).GetLayer()].push_back(ptr);
+
+    if (started && !(*ptr).HasStarted()) {
         (*ptr).Start();
     }
 
     return weak_ptr<GameObject>(ptr);
 }
 
-weak_ptr<GameObject> State::AddObject(GameObject *obj) {
-    return AddObject(obj, 0);
+shared_ptr<GameObject> State::PopObjectPtr(GameObject *obj) {
+    auto &layer = objectArray[obj->GetLayer()];
+
+    for (int i = 0; i < layer.size(); ++i) {
+        auto object = layer[i];
+        if (object.get() == obj) {
+            layer.erase(layer.begin() + i);
+            return object;
+        }
+    }
+    return shared_ptr<GameObject>();
 }
+

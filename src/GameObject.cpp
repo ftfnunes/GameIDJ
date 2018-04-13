@@ -1,7 +1,8 @@
 #include <algorithm>
+#include <Game.h>
 #include "GameObject.h"
 
-GameObject::GameObject() : isDead(false), started(false), angleDeg(0) {
+GameObject::GameObject() : isDead(false), started(false), angleDeg(0), layer(0) {
 }
 
 GameObject::~GameObject() {
@@ -14,9 +15,12 @@ void GameObject::Update(float dt) {
     for(auto it = components.begin(); it != components.end(); ++it) {
         (*it)->Update(dt);
     }
+
+    updated = true;
 }
 
 void GameObject::Render() {
+    updated = false;
     for(auto it = components.begin(); it != components.end(); ++it) {
         (*it)->Render();
     }
@@ -63,5 +67,17 @@ int GameObject::GetLayer() {
 }
 
 void GameObject::SetLayer(int layer) {
+    auto &state = Game::GetInstance().GetState();
+    auto obj = state.PopObjectPtr(this);
     this->layer = layer;
+    state.AddObject(obj);
+
+}
+
+bool GameObject::HasStarted() {
+    return started;
+}
+
+bool GameObject::IsUpdated() {
+    return updated;
 }

@@ -24,6 +24,8 @@ public:
 
     int GetLayer();
     void SetLayer(int layer);
+    bool HasStarted();
+    bool IsUpdated();
 
     Rect box;
     double angleDeg;
@@ -31,6 +33,7 @@ private:
     vector<unique_ptr<Component>> components;
     bool isDead;
     bool started;
+    bool updated;
     int layer;
 };
 

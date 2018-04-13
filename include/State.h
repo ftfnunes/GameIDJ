@@ -14,8 +14,9 @@ class State {
     bool QuitRequested();
     void Start();
     weak_ptr<GameObject> AddObject(GameObject *obj);
-    weak_ptr<GameObject> AddObject(GameObject *obj, int layer);
+    weak_ptr<GameObject> AddObject(shared_ptr<GameObject> obj);
     weak_ptr<GameObject> GetObjectPtr(GameObject *obj);
+    shared_ptr<GameObject> PopObjectPtr(GameObject *obj);
     void LoadAssets();
     void Update(float dt);
     void Render();

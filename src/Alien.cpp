@@ -26,6 +26,14 @@ void Alien::Update(float dt) {
         taskQueue.push(Action(Action::MOVE, mouseX, mouseY));
     }
 
+    if (inputManager.KeyPress(SDLK_u)) {
+        if (associated.GetLayer() == 0) {
+            associated.SetLayer(1);
+        } else {
+            associated.SetLayer(0);
+        }
+    }
+
     if (!taskQueue.empty()) {
         auto action = taskQueue.front();
 

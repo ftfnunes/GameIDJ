@@ -22,6 +22,7 @@ public:
     Vec2 operator-(Vec2 v2);
     Vec2 operator*(float scalar);
     void operator+=(Vec2 v);
+    void operator*=(float scalar);
 };
 
 

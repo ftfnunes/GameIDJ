@@ -2,6 +2,7 @@
 #include <InputManager.h>
 #include <Minion.h>
 #include <Game.h>
+#include <Camera.h>
 #include "Alien.h"
 
 Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMinions(nMinions) {
@@ -14,16 +15,17 @@ Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMin
 
 void Alien::Update(float dt) {
     auto inputManager = InputManager::GetInstance();
-    auto mouseX = inputManager.getMouseXWithCamera();
-    auto mouseY = inputManager.getMouseYWithCamera();
+
 
     associated.angleDeg += ALIEN_ROTATION_SPEED*dt;
 
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-        taskQueue.push(Action(Action::SHOOT, mouseX, mouseY));
+        auto mousePos = inputManager.GetMouse();
+        taskQueue.push(Action(Action::SHOOT, mousePos.x, mousePos.y));
     }
     if (inputManager.MousePress(RIGHT_MOUSE_BUTTON)) {
-        taskQueue.push(Action(Action::MOVE, mouseX, mouseY));
+        auto mousePos = Camera::GetClickPosition(associated.GetLayer(), inputManager.GetMouse());
+        taskQueue.push(Action(Action::MOVE, mousePos.x, mousePos.y));
     }
 
     if (inputManager.KeyPress(SDLK_u)) {
@@ -39,7 +41,7 @@ void Alien::Update(float dt) {
 
         if (action.type == Action::MOVE) {
             auto dMod = ALIEN_SPEED*dt;
-            auto expectedD = Vec2(action.pos.x, action.pos.y) - associated.box.Center();
+            auto expectedD = action.pos - associated.box.Center();
             auto effectiveD = Vec2(dMod, 0).Rotate(expectedD.XAngle());
 
             if (expectedD.Module() < effectiveD.Module()) {
@@ -51,20 +53,23 @@ void Alien::Update(float dt) {
         } else {
             auto minionObj = shared_ptr<GameObject>();
             auto lastDistance = 0.0;
+            auto target = Vec2();
 
             for (auto &it: minionArray) {
                 auto objPtr = it.lock();
                 auto &obj = (*objPtr);
-                auto distance = obj.box.Center().Distance(Vec2(mouseX, mouseY));
+                auto tgt = Camera::GetClickPosition((*objPtr).GetLayer(), action.pos);
+                auto distance = obj.box.Center().Distance(tgt);
                 if (!minionObj || distance < lastDistance) {
                     minionObj = objPtr;
                     lastDistance = distance;
+                    target = tgt;
                 }
             }
 
             auto minion = (Minion *) (*minionObj).GetComponent("Minion");
 
-            minion->Shoot(Vec2(mouseX, mouseY));
+            minion->Shoot(target);
             taskQueue.pop();
         }
     }

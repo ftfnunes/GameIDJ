@@ -46,18 +46,38 @@ void Camera::SetLayerHeight(int layer, float height) {
     layerHeights[layer] = height;
 }
 
-Vec2 Camera::GetRenderPosition(int layer, Vec2 absolutePos) {
-    auto result = absolutePos - pos;
+float Camera::GetLayerScale(int layer) {
     auto height = layerHeights.find(layer);
 
     if (height != layerHeights.end()) {
-
+        return cameraHeight/((*height).second);
     }
 
-    return result;
+    return 1.0;
 }
 
 void Camera::SetCameraHeight(float height) {
-    height = cameraHeight;
+    cameraHeight = height;
+}
+
+Vec2 Camera::GetRenderPosition(int layer, Vec2 absolutePosition) {
+    return GetRenderPosition(absolutePosition, GetLayerScale(layer));
+}
+
+Vec2 Camera::GetRenderPosition(Vec2 absPosition, float layerScale) {
+    auto center = Vec2(WIDTH/2, HEIGHT/2);
+    return (absPosition - center - pos)*layerScale + center;
+}
+
+Vec2 Camera::GetClickPosition(int layer, Vec2 mouseClick) {
+    auto center = Vec2(WIDTH/2, HEIGHT/2);
+    auto height = layerHeights.find(layer);
+    auto inverseScale = 1.0;
+
+    if (height != layerHeights.end()) {
+        inverseScale = ((*height).second)/cameraHeight;
+    }
+
+    return (mouseClick - center)*inverseScale + center + pos;
 }
 

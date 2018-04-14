@@ -51,3 +51,7 @@ void Vec2::operator+=(Vec2 v) {
 float Vec2::XAngleDeg() {
     return (XAngle()/(2*M_PI))*360;
 }
+
+void Vec2::operator*=(float scalar) {
+    *this = *this * scalar;
+}

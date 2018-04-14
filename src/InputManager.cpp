@@ -73,11 +73,7 @@ InputManager &InputManager::GetInstance() {
     return manager;
 }
 
-int InputManager::getMouseXWithCamera() {
-
-    return mouseX + Camera::pos.x;
+Vec2 InputManager::GetMouse() {
+    return Vec2(mouseX, mouseY);
 }
 
-int InputManager::getMouseYWithCamera() {
-    return mouseY + Camera::pos.y;
-}

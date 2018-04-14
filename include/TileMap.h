@@ -19,7 +19,8 @@ public:
     void Update(float dt) override;
     bool Is(string type) override;
 
-    void RenderLayer(int layer, int cameraX = 0, int cameraY = 0);
+    void RenderLayer(int layer, int cameraX, int cameraY);
+    void RenderLayer(int layer);
     int GetWidth();
     int GetHeight();
     int GetDepth();

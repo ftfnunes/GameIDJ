@@ -24,6 +24,7 @@ public:
     void SetClip(int x, int y, int w, int h);
     void Render();
     void Render(float x, float y);
+    void Render(float x, float y, int layer);
     int GetWidth();
     int GetHeight();
     void SetScaleX(float scaleX, float scaleY);

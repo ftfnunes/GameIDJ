@@ -32,9 +32,13 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.h = h;
 }
 
-void Sprite::Render(float x, float y) {
+
+void Sprite::Render(float x, float y, int layer) {
     Game &game = Game::GetInstance();
-    SDL_Rect dstRect = { x, y, clipRect.w*scale.x, clipRect.h*scale.y };
+    auto cameraPos = Camera::pos;
+    auto layerScale = Camera::GetLayerScale(layer);
+    auto renderPos = Camera::GetRenderPosition(Vec2(x, y), layerScale);
+    SDL_Rect dstRect = { renderPos.x, renderPos.y, (int)(clipRect.w*scale.x*layerScale)+1, (int)(clipRect.h*scale.y*layerScale)+1 };
     SDL_RenderCopyEx(game.GetRenderer(),
                      texture,
                      &clipRect,
@@ -44,10 +48,14 @@ void Sprite::Render(float x, float y) {
                      SDL_FLIP_NONE);
 }
 
+void Sprite::Render(float x, float y) {
+    Render(x, y, associated.GetLayer());
+}
+
 void Sprite::Render() {
     auto box = associated.box;
-    auto camera = Camera::GetPosWithModifier(associated.GetLayer());
-    Render(box.x - camera.x, box.y - camera.y);
+
+    Render(box.x, box.y);
 }
 
 bool Sprite::IsOpen() {
@@ -82,3 +90,4 @@ void Sprite::SetScaleX(float scaleX, float scaleY) {
 Vec2 Sprite::GetScale() {
     return scale;
 }
+

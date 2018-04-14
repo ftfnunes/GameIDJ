@@ -17,8 +17,11 @@ public:
     static void Update(float dt);
 
     static void SetLayerHeight(int layer, float height);
-    static Vec2 GetRenderPosition(int layer, Vec2 absolutePos);
+    static float GetLayerScale(int layer);
     static void SetCameraHeight(float height);
+    static Vec2 GetRenderPosition(int layer, Vec2 absolutePosition);
+    static Vec2 GetRenderPosition(Vec2 absolutePosition, float layerScale);
+    static Vec2 GetClickPosition(int layer, Vec2 mouseClick);
 
     static Vec2 pos;
     static Vec2 speed;

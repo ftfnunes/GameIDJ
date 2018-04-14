@@ -13,7 +13,8 @@ State::State() : music("audio/stageState.ogg"),
                  tileMap(nullptr),
                  bg(nullptr) {
 
-    Camera::SetModifier(1, 1.4);
+    Camera::SetCameraHeight(5);
+    Camera::SetLayerHeight(1, 4.3);
 
     bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
@@ -73,8 +74,7 @@ void State::Render() {
     bg->Render();
     for (int i = 0; i < tileMap->GetDepth(); i++) {
         auto it = objectArray.find(i);
-        auto cameraPos = Camera::GetPosWithModifier(i);
-        tileMap->RenderLayer(i, cameraPos.x, cameraPos.y);
+        tileMap->RenderLayer(i);
 
         if (it != objectArray.end()) {
             auto &objects = (*it).second;

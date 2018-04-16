@@ -20,7 +20,7 @@ void Alien::Update(float dt) {
     associated.angleDeg += ALIEN_ROTATION_SPEED*dt;
 
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-        auto mousePos = inputManager.GetMouse();
+        auto mousePos = inputManager.GetMouse() + Camera::pos;
         taskQueue.push(Action(Action::SHOOT, mousePos.x, mousePos.y));
     }
     if (inputManager.MousePress(RIGHT_MOUSE_BUTTON)) {
@@ -58,7 +58,7 @@ void Alien::Update(float dt) {
             for (auto &it: minionArray) {
                 auto objPtr = it.lock();
                 auto &obj = (*objPtr);
-                auto tgt = Camera::GetClickPosition((*objPtr).GetLayer(), action.pos);
+                auto tgt = Camera::GetClickPosition((*objPtr).GetLayer(), action.pos, false);
                 auto distance = obj.box.Center().Distance(tgt);
                 if (!minionObj || distance < lastDistance) {
                     minionObj = objPtr;

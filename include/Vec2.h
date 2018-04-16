@@ -11,6 +11,7 @@ public:
     Vec2 Normalize();
     float Distance(Vec2 target);
     float XAngle();
+    float XAngleDeg();
     // Angle is in radians
     Vec2 Rotate(float angle);
     // Angle of target - this
@@ -21,6 +22,7 @@ public:
     Vec2 operator-(Vec2 v2);
     Vec2 operator*(float scalar);
     void operator+=(Vec2 v);
+    void operator*=(float scalar);
 };
 
 

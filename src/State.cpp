@@ -3,11 +3,18 @@
 #include <InputManager.h>
 #include <Camera.h>
 #include <CameraFollower.h>
-#include "Face.h"
-#include "Sound.h"
+#include <Alien.h>
+#include <algorithm>
 
-State::State() : music("audio/stageState.ogg"), tileMap(nullptr), bg(nullptr) {
-    quitRequested = false;
+
+State::State() : music("audio/stageState.ogg"),
+                 quitRequested(false),
+                 started(false),
+                 tileMap(nullptr),
+                 bg(nullptr) {
+
+    Camera::SetCameraHeight(5);
+    Camera::SetLayerHeight(1, 4.3);
 
     bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
@@ -20,6 +27,12 @@ State::State() : music("audio/stageState.ogg"), tileMap(nullptr), bg(nullptr) {
     auto set = new TileSet(64, 64, "img/tileset.png");
     tileMap = new TileMap(*mapObject, "map/tileMap.txt", set);
     mapObject->AddComponent(tileMap);
+
+    auto alienObject = new GameObject(1);
+    alienObject->box = Rect(512, 300, 0, 0);
+    auto alien = new Alien(*alienObject, 3);
+    alienObject->AddComponent(alien);
+    AddObject(alienObject);
 
     music.Play();
 }
@@ -35,17 +48,14 @@ void State::Update(float dt) {
 
     quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
 
-    if (inputManager.KeyPress(SPACE_BAR_KEY)) {
-        auto objPos = Vec2(inputManager.GetMouseX(), inputManager.GetMouseY()) +
-                Vec2(0, 200).Rotate(M_PI*((rand()%1001)/500.0));
-        AddObject(objPos.x, objPos.y);
-    }
-
     for (auto &it : objectArray) {
         auto &objects = it.second;
 
         for (int i = 0; i < objects.size(); ++i) {
-            objects[i]->Update(dt);
+            auto obj = objects[i];
+            if (!obj->IsUpdated()) {
+                obj->Update(dt);
+            }
         }
     }
 
@@ -64,7 +74,7 @@ void State::Render() {
     bg->Render();
     for (int i = 0; i < tileMap->GetDepth(); i++) {
         auto it = objectArray.find(i);
-        tileMap->RenderLayer(i, Camera::pos.x, Camera::pos.y);
+        tileMap->RenderLayer(i);
 
         if (it != objectArray.end()) {
             auto &objects = (*it).second;
@@ -84,14 +94,59 @@ State::~State() {
     objectArray.clear();
 }
 
-void State::AddObject(int mouseX, int mouseY) {
-    auto *go = new GameObject();
-    Sprite *pSprite = new Sprite(*go, "img/penguinface.png");
-    go->box.x = Camera::pos.x + mouseX - go->box.w/2;
-    go->box.y = Camera::pos.y + mouseY - go->box.h/2;
-    go->AddComponent(pSprite);
-    go->AddComponent(new Sound(*go, "audio/boom.wav"));
-    go->AddComponent(new Face(*go));
+void State::Start() {
+    this->LoadAssets();
+    for (auto &objLayer : objectArray) {
+        auto &objects = objLayer.second;
+        for (int i = 0; i < objects.size(); i++) {
+            (*objects[i]).Start();
+        }
+    }
 
-    objectArray[0].emplace_back(go);
+
+    started = true;
 }
+
+weak_ptr<GameObject> State::GetObjectPtr(GameObject *obj) {
+
+    auto &objects = objectArray[obj->GetLayer()];
+    for (auto &object : objects) {
+        if (object.get() == obj) {
+            return weak_ptr<GameObject>(object);
+        }
+    }
+
+    return weak_ptr<GameObject>();
+}
+
+weak_ptr<GameObject> State::AddObject(GameObject *obj) {
+    auto ptr = shared_ptr<GameObject>(obj);
+
+    return AddObject(ptr);
+}
+
+weak_ptr<GameObject> State::AddObject(shared_ptr<GameObject> ptr) {
+
+    objectArray[(*ptr).GetLayer()].push_back(ptr);
+
+    if (started && !(*ptr).HasStarted()) {
+        (*ptr).Start();
+    }
+
+    return weak_ptr<GameObject>(ptr);
+}
+
+shared_ptr<GameObject> State::PopObjectPtr(GameObject *obj) {
+    auto &layer = objectArray[obj->GetLayer()];
+
+    for (int i = 0; i < layer.size(); ++i) {
+        auto object = layer[i];
+        if (object.get() == obj) {
+            layer.erase(layer.begin() + i);
+            return object;
+        }
+    }
+
+    return shared_ptr<GameObject>();
+}
+

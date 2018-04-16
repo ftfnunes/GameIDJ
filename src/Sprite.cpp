@@ -5,16 +5,15 @@
 #include <Resources.h>
 #include <Camera.h>
 
-Sprite::Sprite(GameObject &associated) : Component(associated) {
+Sprite::Sprite(GameObject &associated) : Component(associated), scale(Vec2(1, 1)) {
     texture = nullptr;
 }
 
-Sprite::Sprite(GameObject &associated, string file) : Component(associated) {
-    texture = nullptr;
+Sprite::Sprite(GameObject &associated, string file) : Sprite(associated) {
     Open(file);
 }
 
-Sprite::~Sprite() {}
+Sprite::~Sprite() = default;
 
 void Sprite::Open(string file) {
     texture = Resources::GetImage(file);
@@ -33,16 +32,30 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.h = h;
 }
 
-void Sprite::Render(float x, float y) {
+
+void Sprite::Render(float x, float y, int layer) {
     Game &game = Game::GetInstance();
-    SDL_Rect dstRect = { x, y, clipRect.w, clipRect.h };
-    SDL_RenderCopy(game.GetRenderer(), texture, &clipRect, &dstRect);
+    auto cameraPos = Camera::pos;
+    auto layerScale = Camera::GetLayerScale(layer);
+    auto renderPos = Camera::GetRenderPosition(Vec2(x, y), layerScale);
+    SDL_Rect dstRect = { renderPos.x, renderPos.y, (int)(clipRect.w*scale.x*layerScale)+1, (int)(clipRect.h*scale.y*layerScale)+1 };
+    SDL_RenderCopyEx(game.GetRenderer(),
+                     texture,
+                     &clipRect,
+                     &dstRect,
+                     associated.angleDeg,
+                     nullptr,
+                     SDL_FLIP_NONE);
+}
+
+void Sprite::Render(float x, float y) {
+    Render(x, y, associated.GetLayer());
 }
 
 void Sprite::Render() {
     auto box = associated.box;
-    auto camera = Camera::pos;
-    Render(box.x - camera.x, box.y - camera.y);
+
+    Render(box.x, box.y);
 }
 
 bool Sprite::IsOpen() {
@@ -50,7 +63,7 @@ bool Sprite::IsOpen() {
 }
 
 int Sprite::GetHeight() {
-    return height;
+    return height*scale.y;
 }
 
 bool Sprite::Is(string type) {
@@ -60,5 +73,21 @@ bool Sprite::Is(string type) {
 void Sprite::Update(float dt) {}
 
 int Sprite::GetWidth() {
-    return width;
+    return width*scale.x;
 }
+
+void Sprite::SetScaleX(float scaleX, float scaleY) {
+    scale.x = scaleX == 0 ? scale.x : scaleX;
+    scale.y = scaleY == 0 ? scale.y : scaleY;
+    auto &box = associated.box;
+    auto center = box.Center();
+    box.w = width*scaleX;
+    box.h = height*scaleY;
+    box.x = center.x - box.w/2;
+    box.y = center.y - box.h/2;
+}
+
+Vec2 Sprite::GetScale() {
+    return scale;
+}
+

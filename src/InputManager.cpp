@@ -3,6 +3,7 @@
 //
 
 #include <cstring>
+#include <Camera.h>
 #include "InputManager.h"
 
 InputManager::InputManager() : quitRequested(false), updateCounter(0), mouseX(0), mouseY(0)  {
@@ -71,3 +72,8 @@ InputManager &InputManager::GetInstance() {
 
     return manager;
 }
+
+Vec2 InputManager::GetMouse() {
+    return Vec2(mouseX, mouseY);
+}
+

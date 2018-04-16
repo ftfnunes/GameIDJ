@@ -9,6 +9,7 @@
 #include <unordered_map>
 #define INCLUDE_SDL
 #include "SDL_include.h"
+#include "Vec2.h"
 
 #define NUM_MOUSE_BUTTONS 6
 #define LEFT_ARROW_KEY      SDLK_LEFT
@@ -18,7 +19,7 @@
 #define SPACE_BAR_KEY       SDLK_SPACE
 #define ESCAPE_KEY          SDLK_ESCAPE
 #define LEFT_MOUSE_BUTTON   SDL_BUTTON_LEFT
-
+#define RIGHT_MOUSE_BUTTON   SDL_BUTTON_RIGHT
 
 
 using namespace std;
@@ -39,6 +40,7 @@ public:
 
     int GetMouseX();
     int GetMouseY();
+    Vec2 GetMouse();
 
     bool QuitRequested();
 

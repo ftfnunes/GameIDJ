@@ -2,7 +2,6 @@
 #include <Game.h>
 #include <GameObject.h>
 #include <Camera.h>
-#include "TileMap.h"
 
 TileMap::TileMap(GameObject &associated, string file, TileSet *tileSet) : Component(associated),
                                                                           tileSet(tileSet) {
@@ -18,17 +17,17 @@ int& TileMap::At(int x, int y, int z) {
     return tileMatrix[index];
 }
 
-
-
 void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
+    RenderLayer(layer);
+}
+
+void TileMap::RenderLayer(int layer) {
     for (int i = 0; i < mapWidth; i++) {
         for (int j = 0; j < mapHeight; ++j) {
-            int x = i*tileSet->GetTileWidth() - cameraX - 0.4*(layer)*cameraX;
-            int y = j*tileSet->GetTileHeight() - cameraY - 0.4*(layer)*cameraY;
+            auto x = i*tileSet->GetTileWidth();
+            auto y = j*tileSet->GetTileHeight();
             Rect box = associated.box;
-            if (x > -tileSet->GetTileWidth() && x < box.w && y > -tileSet->GetTileHeight() && y < box.h) {
-                tileSet->RenderTile(At(i, j, layer), x, y);
-            }
+            tileSet->RenderTile(At(i, j, layer), x, y, layer);
         }
     }
 }
@@ -102,7 +101,6 @@ void TileMap::Load(string file) {
                 throw "Error in file format in " + file;
             }
         }
-        cout << "carregado" << endl;
     } else {
         throw "Erro ao abrir o arquivo " + file;
     }

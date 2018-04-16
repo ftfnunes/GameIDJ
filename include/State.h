@@ -12,16 +12,21 @@ class State {
     State();
     ~State();
     bool QuitRequested();
+    void Start();
+    weak_ptr<GameObject> AddObject(GameObject *obj);
+    weak_ptr<GameObject> AddObject(shared_ptr<GameObject> obj);
+    weak_ptr<GameObject> GetObjectPtr(GameObject *obj);
+    shared_ptr<GameObject> PopObjectPtr(GameObject *obj);
     void LoadAssets();
     void Update(float dt);
     void Render();
   private:
-    void AddObject(int mouseX, int mouseY);
     Music music;
     bool quitRequested;
+    bool started;
     TileMap *tileMap;
     GameObject *bg;
-    map<int, vector<unique_ptr<GameObject>>> objectArray;
+    map<int, vector<shared_ptr<GameObject>>> objectArray;
 };
 
 #endif

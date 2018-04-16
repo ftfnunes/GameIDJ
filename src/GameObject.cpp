@@ -1,8 +1,14 @@
 #include <algorithm>
+#include <Game.h>
 #include "GameObject.h"
 
-GameObject::GameObject() : isDead(false) {
-}
+GameObject::GameObject() : GameObject(0) {}
+
+
+GameObject::GameObject(int layer) : isDead(false),
+                                    started(false),
+                                    angleDeg(0),
+                                    layer(layer) {}
 
 GameObject::~GameObject() {
     for(auto it = components.rbegin(); it != components.rend(); ++it) {
@@ -16,9 +22,12 @@ void GameObject::Update(float dt) {
     for(auto it = components.begin(); it != components.end(); ++it) {
         (*it)->Update(dt);
     }
+
+    updated = true;
 }
 
 void GameObject::Render() {
+    updated = false;
     for(auto it = components.begin(); it != components.end(); ++it) {
         (*it)->Render();
     }
@@ -33,6 +42,9 @@ void GameObject::RequestDelete() {
 }
 
 void GameObject::AddComponent(Component *cpt) {
+    if (started) {
+        cpt->Start();
+    }
     components.emplace_back(cpt);
 }
 
@@ -48,4 +60,32 @@ Component *GameObject::GetComponent(string type) {
         }
     }
     return nullptr;
+}
+
+void GameObject::Start() {
+    for(auto it = components.begin(); it != components.end(); ++it) {
+        (*(*it)).Start();
+    }
+    started = true;
+}
+
+int GameObject::GetLayer() {
+    return layer;
+}
+
+void GameObject::SetLayer(int layer) {
+    auto &state = Game::GetInstance().GetState();
+    auto obj = state.PopObjectPtr(this);
+    this->layer = layer;
+    if (obj) {
+        state.AddObject(obj);
+    }
+}
+
+bool GameObject::HasStarted() {
+    return started;
+}
+
+bool GameObject::IsUpdated() {
+    return updated;
 }

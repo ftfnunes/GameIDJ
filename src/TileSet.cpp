@@ -10,12 +10,17 @@ TileSet::TileSet(int tileWidth, int tileHeight, string file) : tileWidth(tileWid
 }
 
 void TileSet::RenderTile(unsigned int index, float x, float y) {
+    RenderTile(index, x, y, 0);
+}
+
+
+void TileSet::RenderTile(unsigned int index, float x, float y, int layer) {
     int maxRange = columns*rows;
     if (index < maxRange-1) {
         int column = index % columns;
         int row = index / columns;
         tileSet.SetClip(column*tileWidth, row*tileHeight, tileWidth, tileHeight);
-        tileSet.Render(x, y);
+        tileSet.Render(x, y, layer);
     }
 }
 
@@ -26,3 +31,4 @@ int TileSet::GetTileHeight() {
 int TileSet::GetTileWidth() {
     return tileWidth;
 }
+

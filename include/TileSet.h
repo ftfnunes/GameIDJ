@@ -11,6 +11,7 @@ public:
     TileSet(int tileWidth, int tileHeight, string file);
 
     void RenderTile(unsigned int index, float x, float y);
+    void RenderTile(unsigned int index, float x, float y, int layer);
     int GetTileWidth();
     int GetTileHeight();
 

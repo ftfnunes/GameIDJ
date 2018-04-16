@@ -30,7 +30,7 @@ State::State() : music("audio/stageState.ogg"),
 
     auto alienObject = new GameObject(1);
     alienObject->box = Rect(512, 300, 0, 0);
-    auto alien = new Alien(*alienObject, 3);
+    auto alien = new Alien(*alienObject, 5);
     alienObject->AddComponent(alien);
     AddObject(alienObject);
 

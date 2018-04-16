@@ -29,7 +29,7 @@ void Bullet::Update(float dt) {
         associated.RequestDelete();
     }
 
-    distanceLeft -= d.Module();
+    distanceLeft -= dModule;
 }
 
 void Bullet::Render() {}

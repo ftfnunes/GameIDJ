@@ -16,7 +16,6 @@ Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMin
 void Alien::Update(float dt) {
     auto inputManager = InputManager::GetInstance();
 
-
     associated.angleDeg += ALIEN_ROTATION_SPEED*dt;
 
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {

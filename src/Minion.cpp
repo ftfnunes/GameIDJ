@@ -37,7 +37,6 @@ bool Minion::Is(string type) {
     return type == MINION_TYPE;
 }
 
-
 void Minion::Shoot(Vec2 target) {
     auto bulletObj = new GameObject();
     auto bullet = new Bullet(*bulletObj,

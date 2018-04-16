@@ -14,6 +14,8 @@ GameObject::~GameObject() {
     for(auto it = components.rbegin(); it != components.rend(); ++it) {
         (*it).reset();
     }
+
+    components.clear();
 }
 
 void GameObject::Update(float dt) {

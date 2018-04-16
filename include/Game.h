@@ -2,7 +2,9 @@
 #include "SDL_include.h"
 #include "State.h"
 
-#define GAME_NAME "14/0039678"
+#define ASSETS_PATH "assets/"
+
+#define GAME_NAME "Fernando_14/0039678"
 #define WIDTH 1024
 #define HEIGHT 600
 

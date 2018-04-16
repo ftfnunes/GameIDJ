@@ -81,3 +81,7 @@ Vec2 Camera::GetClickPosition(int layer, Vec2 mouseClick, bool correctCamera) {
     return (mouseClick - center)*inverseScale + center + (correctCamera ? pos : Vec2());
 }
 
+bool Camera::IsFollowing() {
+    return focus != nullptr;
+}
+

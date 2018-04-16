@@ -36,6 +36,14 @@ void Alien::Update(float dt) {
         }
     }
 
+    if (inputManager.KeyPress(SDLK_l)) {
+        if (Camera::IsFollowing()) {
+            Camera::Unfollow();
+        } else {
+            Camera::Follow(&associated);
+        }
+    }
+
     if (!taskQueue.empty()) {
         auto action = taskQueue.front();
 

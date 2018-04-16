@@ -15,6 +15,8 @@ public:
     static void Follow(GameObject *newFocus);
     static void Unfollow();
     static void Update(float dt);
+    static bool IsFollowing();
+
 
     static void SetLayerHeight(int layer, float height);
     static float GetLayerScale(int layer);

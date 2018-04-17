@@ -29,7 +29,7 @@ public:
     void Shoot(Vec2 target);
 
 private:
-    GameObject &alienCenter;
+    weak_ptr<GameObject> alienCenter;
     float arc;
 };
 

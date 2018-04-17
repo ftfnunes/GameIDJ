@@ -11,7 +11,7 @@
 Minion::Minion(GameObject &associated,
                weak_ptr<GameObject> alienCenter,
                float arcOffsetDeg) : Component(associated),
-                                     alienCenter(*alienCenter.lock()),
+                                     alienCenter(alienCenter),
                                      arc(arcOffsetDeg) {
     auto sprite = new Sprite(associated, "img/minion.png");
     auto scale = ((rand() % 501) + 1000) / 1000.0;
@@ -20,15 +20,19 @@ Minion::Minion(GameObject &associated,
 
     auto r = Vec2(ORBIT_RADIUS, 0).Rotate(arc);
     auto correctedR = r - Vec2(associated.box.w/2, associated.box.h/2);
-    this->associated.box += this->alienCenter.box.Center() + correctedR;
+    this->associated.box += (*this->alienCenter.lock()).box.Center() + correctedR;
 }
 
 void Minion::Update(float dt) {
-    arc += MINION_ANG_SPEED*dt;
-    auto r = Vec2(ORBIT_RADIUS, 0).Rotate(arc);
-    associated.angleDeg = r.XAngleDeg();
-    auto d = r - associated.box.Center();
-    this->associated.box += alienCenter.box.Center() + d;
+    if (alienCenter.expired()) {
+        associated.RequestDelete();
+    } else {
+        arc += MINION_ANG_SPEED*dt;
+        auto r = Vec2(ORBIT_RADIUS, 0).Rotate(arc);
+        associated.angleDeg = r.XAngleDeg();
+        auto d = r - associated.box.Center();
+        this->associated.box += (*alienCenter.lock()).box.Center() + d;
+    }
 }
 
 void Minion::Render() {}

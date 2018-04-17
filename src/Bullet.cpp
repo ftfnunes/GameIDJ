@@ -3,6 +3,7 @@
 //
 
 #include <Sprite.h>
+#include <Collider.h>
 #include "Bullet.h"
 
 
@@ -15,6 +16,7 @@ Bullet::Bullet(GameObject &associated,
                int frameCount,
                float frameTime) : Component(associated), damage(damage), distanceLeft(maxDistance) {
     associated.AddComponent(new Sprite(associated, sprite, frameCount, frameTime));
+    associated.AddComponent(new Collider(associated));
     associated.angleDeg = angle;
     this->speed = Vec2(speed, 0).Rotate((angle/360)*2*M_PI);
 }

@@ -89,3 +89,9 @@ bool GameObject::HasStarted() {
 bool GameObject::IsUpdated() {
     return updated;
 }
+
+void GameObject::NotifyCollision(GameObject &other) {
+    for (auto &it : components) {
+        (*it).NotifyCollision(other);
+    }
+}

@@ -27,6 +27,7 @@ public:
     void SetLayer(int layer);
     bool HasStarted();
     bool IsUpdated();
+    void NotifyCollision(GameObject &other);
 
     Rect box;
     double angleDeg;

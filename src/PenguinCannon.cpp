@@ -7,11 +7,13 @@
 #include <Camera.h>
 #include <Game.h>
 #include <Bullet.h>
+#include <Collider.h>
 #include "PenguinCannon.h"
 
 
 PenguinCannon::PenguinCannon(GameObject &associated, weak_ptr<GameObject> penguinBody) : Component(associated), pBody(penguinBody), angle(0) {
     associated.AddComponent(new Sprite(associated, "img/cubngun.png"));
+    associated.AddComponent(new Collider(associated));
 }
 
 void PenguinCannon::Update(float dt) {

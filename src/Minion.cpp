@@ -4,6 +4,7 @@
 
 #include <GameObject.h>
 #include <Game.h>
+#include <Collider.h>
 #include "Minion.h"
 #include "Bullet.h"
 
@@ -17,6 +18,7 @@ Minion::Minion(GameObject &associated,
     auto scale = ((rand() % 501) + 1000) / 1000.0;
     sprite->SetScaleX(scale, scale);
     associated.AddComponent(sprite);
+    associated.AddComponent(new Collider(associated));
 
     auto r = Vec2(ORBIT_RADIUS, 0).Rotate(arc);
     auto correctedR = r - Vec2(associated.box.w/2, associated.box.h/2);

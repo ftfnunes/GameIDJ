@@ -6,12 +6,14 @@
 #include <PenguinCannon.h>
 #include <Game.h>
 #include <InputManager.h>
+#include <Collider.h>
 #include "PenguinBody.h"
 
 PenguinBody *PenguinBody::player = nullptr;
 
 PenguinBody::PenguinBody(GameObject &associated) : Component(associated), speed(Vec2()), linearSpeed(0), angle(0), hp(50)  {
     associated.AddComponent(new Sprite(associated, "img/penguin.png"));
+    associated.AddComponent(new Collider(associated));
 
     player = this;
     associatedPtr = shared_ptr<GameObject>(&associated);

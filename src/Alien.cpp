@@ -3,11 +3,13 @@
 #include <Minion.h>
 #include <Game.h>
 #include <Camera.h>
+#include <Collider.h>
 #include "Alien.h"
 
 Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMinions(nMinions) {
     auto sprite = new Sprite(associated, "img/alien.png");
     associated.AddComponent(sprite);
+    associated.AddComponent(new Collider(associated));
 
     hp = 30;
     speed = Vec2(0, 0);

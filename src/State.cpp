@@ -6,6 +6,8 @@
 #include <Alien.h>
 #include <algorithm>
 #include <PenguinBody.h>
+#include <Collider.h>
+#include <Collision.h>
 
 
 State::State() : music("audio/stageState.ogg"),
@@ -63,6 +65,34 @@ void State::Update(float dt) {
             auto obj = objects[i];
             if (!obj->IsUpdated()) {
                 obj->Update(dt);
+            }
+        }
+    }
+
+    for (auto &it: objectArray) {
+        auto &objects = it.second;
+        auto colliderArray = new Collider*[objects.size()];
+        memset(colliderArray, 0, objects.size()*sizeof(Collider *));
+        for (int i = 0; i < objects.size(); ++i) {
+            for (int j = i; j < objects.size(); ++j) {
+                if (i == 0) {
+                    colliderArray[j] = (Collider *)(*objects[j]).GetComponent(COLLIDER_TYPE);
+                }
+                if (colliderArray[i] == nullptr) {
+                    break;
+                }
+
+                if (i != j && colliderArray[j] != nullptr) {
+                    auto angleIRad = 2*M_PI*((*objects[i]).angleDeg/360);
+                    auto angleJRad = 2*M_PI*((*objects[j]).angleDeg/360);
+                    auto boxI = colliderArray[i]->box;
+                    auto boxJ = colliderArray[j]->box;
+
+                    if (Collision::IsColliding(boxI, boxJ, angleIRad, angleJRad)) {
+                        (*objects[i]).NotifyCollision((*objects[j]));
+                        (*objects[j]).NotifyCollision((*objects[i]));
+                    }
+                }
             }
         }
     }

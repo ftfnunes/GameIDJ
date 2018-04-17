@@ -44,7 +44,7 @@ void Minion::Shoot(Vec2 target) {
                              MINION_BULLET_SPEED,
                              MINION_BULLET_DAMAGE,
                              MINION_BULLET_DISTANCE,
-                             "img/minionbullet1.png");
+                             "img/minionbullet2.png", 3, 0.1);
 
     auto minionCenter = associated.box.Center();
     bulletObj->AddComponent(bullet);

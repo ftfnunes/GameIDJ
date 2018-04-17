@@ -11,7 +11,7 @@ Sprite::Sprite(GameObject &associated) : Component(associated), scale(Vec2(1, 1)
 
 Sprite::Sprite(GameObject &associated, string file, int frameCount, float frameTime) : Sprite(associated) {
     this->frameCount = frameCount;
-    this->frameTime = frameCount;
+    this->frameTime = frameTime;
     Open(file);
 }
 
@@ -22,8 +22,8 @@ void Sprite::Open(string file) {
 
     SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
 
-    associated.box.h = GetWidth();
-    associated.box.w = GetHeight();
+    associated.box.h = GetHeight();
+    associated.box.w = GetWidth();
 
     SetClip(0, 0, getFrameWidth(), height);
 }
@@ -86,11 +86,12 @@ void Sprite::Update(float dt) {
             nextFrame = 0;
         }
         SetFrame(nextFrame);
+        timeElapsed = 0;
     }
 }
 
 int Sprite::GetWidth() {
-    return (getFrameWidth())*scale.x;
+    return getFrameWidth()*scale.x;
 }
 
 void Sprite::SetScaleX(float scaleX, float scaleY) {

@@ -14,7 +14,9 @@ public:
            float speed,
            int damage,
            float maxDistance,
-           string sprite);
+           string sprite,
+           int frameCount,
+           float frameTime);
 
     void Update(float dt) override;
 

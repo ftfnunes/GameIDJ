@@ -5,6 +5,7 @@
 #include <CameraFollower.h>
 #include <Alien.h>
 #include <algorithm>
+#include <PenguinBody.h>
 
 
 State::State() : music("audio/stageState.ogg"),
@@ -33,6 +34,13 @@ State::State() : music("audio/stageState.ogg"),
     auto alien = new Alien(*alienObject, 5);
     alienObject->AddComponent(alien);
     AddObject(alienObject);
+
+    auto playerObject = new GameObject();
+    playerObject->box = Rect(704, 640);
+    playerObject->AddComponent(new PenguinBody(*playerObject));
+    AddObject(playerObject);
+
+    Camera::Follow(playerObject);
 
     music.Play();
 }

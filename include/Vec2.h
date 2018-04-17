@@ -14,6 +14,7 @@ public:
     float XAngleDeg();
     // Angle is in radians
     Vec2 Rotate(float angle);
+    Vec2 RotateDeg(float angle);
     // Angle of target - this
     float DiferenceAngle(Vec2 target);
 
@@ -22,6 +23,7 @@ public:
     Vec2 operator-(Vec2 v2);
     Vec2 operator*(float scalar);
     void operator+=(Vec2 v);
+    void operator-=(Vec2 v);
     void operator*=(float scalar);
 };
 

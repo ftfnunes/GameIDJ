@@ -29,29 +29,35 @@ void PenguinBody::Update(float dt) {
     } else {
         auto inputManager = InputManager::GetInstance();
 
-        if (inputManager.IsKeyDown(LEFT_ARROW_KEY)) {
+        if (inputManager.IsKeyDown(A_KEY)) {
             angle -= BODY_ANGULAR_SPEED*dt;
-        } else if (inputManager.IsKeyDown(RIGHT_ARROW_KEY)) {
+        } else if (inputManager.IsKeyDown(D_KEY)) {
             angle += BODY_ANGULAR_SPEED*dt;
         }
 
         associated.angleDeg = angle;
 
+        double deltaPos;
         auto acceleration = 0.0;
-        if (linearSpeed <= MAX_SPEED || linearSpeed >= -MAX_SPEED) {
-            if (inputManager.IsKeyDown(UP_ARROW_KEY)) {
+        if (inputManager.IsKeyDown(W_KEY)) {
+            if (linearSpeed >= MAX_SPEED) {
+                linearSpeed = MAX_SPEED;
+            } else {
                 acceleration = ACCELERATION;
-            } else if (inputManager.IsKeyDown(DOWN_ARROW_KEY)) {
+            }
+        } else if (inputManager.IsKeyDown(S_KEY)) {
+            if (linearSpeed <= -MAX_SPEED) {
+                linearSpeed = -MAX_SPEED;
+            } else {
                 acceleration = -ACCELERATION;
             }
-        } else {
-            linearSpeed = MAX_SPEED;
         }
 
         auto deltaSpeed = acceleration*dt;
-        auto deltaPos = linearSpeed*dt + deltaSpeed*(dt/2);
-        linearSpeed += deltaSpeed;
+        deltaPos = linearSpeed*dt + deltaSpeed*(dt/2);
 
+        linearSpeed += deltaSpeed;
+        
         speed = Vec2(linearSpeed, 0).RotateDeg(angle);
         associated.box += Vec2(deltaPos, 0).RotateDeg(angle);
     }

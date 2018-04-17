@@ -10,7 +10,7 @@
 #include "Vec2.h"
 
 #define ACCELERATION 200
-#define MAX_SPEED 700
+#define MAX_SPEED 400
 #define BODY_ANGULAR_SPEED 150
 #define BODY_TYPE "PenguinBody"
 

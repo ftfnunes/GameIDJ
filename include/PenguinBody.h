@@ -20,6 +20,8 @@ public:
 
     ~PenguinBody() override;
 
+    void NotifyCollision(GameObject &other) override;
+
     void Start() override;
 
     void Update(float dt) override;
@@ -28,12 +30,12 @@ public:
 
     bool Is(string type) override;
 
+    void Damage(int damage);
+
     static PenguinBody *player;
 
 private:
-    // TODO: Faz sentido ser um weak_ptr?
-    shared_ptr<GameObject> pCannon;
-    shared_ptr<GameObject> associatedPtr;
+    weak_ptr<GameObject> pCannon;
     Vec2 speed;
     float linearSpeed;
     float angle;

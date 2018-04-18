@@ -7,6 +7,8 @@
 #include <Game.h>
 #include <InputManager.h>
 #include <Collider.h>
+#include <Bullet.h>
+#include <Camera.h>
 #include "PenguinBody.h"
 
 PenguinBody *PenguinBody::player = nullptr;
@@ -16,7 +18,6 @@ PenguinBody::PenguinBody(GameObject &associated) : Component(associated), speed(
     associated.AddComponent(new Collider(associated));
 
     player = this;
-    associatedPtr = shared_ptr<GameObject>(&associated);
 }
 
 PenguinBody::~PenguinBody() {
@@ -27,7 +28,9 @@ PenguinBody::~PenguinBody() {
 void PenguinBody::Update(float dt) {
     if (hp <= 0) {
         associated.RequestDelete();
-        (*pCannon).RequestDelete();
+        if (!pCannon.expired()) {
+            (*pCannon.lock()).RequestDelete();
+        }
     } else {
         auto inputManager = InputManager::GetInstance();
 
@@ -73,10 +76,28 @@ bool PenguinBody::Is(string type) {
 
 void PenguinBody::Start() {
     auto cannonObject = new GameObject();
-    auto cannon = new PenguinCannon(*cannonObject, weak_ptr<GameObject>(associatedPtr));
+    auto associatedPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
+    auto cannon = new PenguinCannon(*cannonObject, associatedPtr);
     cannonObject->AddComponent(cannon);
-    pCannon = shared_ptr<GameObject>(cannonObject);
 
-    Game::GetInstance().GetState().AddObject(cannonObject);
+    pCannon = Game::GetInstance().GetState().AddObject(cannonObject);
 }
+
+void PenguinBody::NotifyCollision(GameObject &other) {
+    auto bullet = (Bullet *) other.GetComponent(BULLET_TYPE);
+    
+    if (bullet != nullptr && bullet->TargetsPlayer()) {
+        Damage(bullet->GetDamage());
+        cout << "hp" << hp << endl;
+    }
+}
+
+void PenguinBody::Damage(int damage) {
+    hp -= damage;
+
+    if (hp <= 0) {
+        Camera::Unfollow();
+    }
+}
+
 

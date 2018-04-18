@@ -8,6 +8,7 @@
 #include <Game.h>
 #include <Bullet.h>
 #include <Collider.h>
+#include <PenguinBody.h>
 #include "PenguinCannon.h"
 
 

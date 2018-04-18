@@ -16,7 +16,8 @@ public:
            float maxDistance,
            string sprite,
            int frameCount,
-           float frameTime);
+           float frameTime,
+           bool targetsPlayer = false);
 
     void Update(float dt) override;
 
@@ -24,12 +25,16 @@ public:
 
     bool Is(string type) override;
 
+    void NotifyCollision(GameObject &other) override;
+
     int GetDamage();
 
+    bool TargetsPlayer();
 private:
     Vec2 speed;
     float distanceLeft;
     int damage;
+    bool targetsPlayer;
 };
 
 

@@ -4,6 +4,8 @@
 
 #include <Sprite.h>
 #include <Collider.h>
+#include <Alien.h>
+#include <PenguinCannon.h>
 #include "Bullet.h"
 
 
@@ -14,7 +16,8 @@ Bullet::Bullet(GameObject &associated,
                float maxDistance,
                string sprite,
                int frameCount,
-               float frameTime) : Component(associated), damage(damage), distanceLeft(maxDistance) {
+               float frameTime,
+               bool targetsPlayer) : Component(associated), damage(damage), distanceLeft(maxDistance), targetsPlayer(targetsPlayer) {
     associated.AddComponent(new Sprite(associated, sprite, frameCount, frameTime));
     associated.AddComponent(new Collider(associated));
     associated.angleDeg = angle;
@@ -45,3 +48,12 @@ int Bullet::GetDamage() {
     return damage;
 }
 
+void Bullet::NotifyCollision(GameObject &other) {
+    if (other.HasComponent(ALIEN_TYPE) &&  !targetsPlayer || other.HasComponent(CANNON_TYPE) &&  targetsPlayer) {
+        associated.RequestDelete();
+    }
+}
+
+bool Bullet::TargetsPlayer() {
+    return targetsPlayer;
+}

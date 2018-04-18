@@ -26,6 +26,7 @@ class State {
     bool started;
     TileMap *tileMap;
     GameObject *bg;
+    vector<weak_ptr<GameObject>> addedObjects;
     map<int, vector<shared_ptr<GameObject>>> objectArray;
 };
 

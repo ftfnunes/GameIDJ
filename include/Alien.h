@@ -10,6 +10,7 @@
 #include <queue>
 #include <memory>
 #include "Vec2.h"
+#include "Bullet.h"
 
 #define ALIEN_TYPE "Alien"
 #define ALIEN_SPEED 100
@@ -27,6 +28,9 @@ public:
     void Render() override;
 
     bool Is(string type) override;
+
+    void NotifyCollision(GameObject &other) override;
+
 private:
     class Action {
     public:
@@ -45,6 +49,5 @@ private:
     queue<Action> taskQueue;
     vector<weak_ptr<GameObject>> minionArray;
 };
-
 
 #endif //T1_ALIEN_H

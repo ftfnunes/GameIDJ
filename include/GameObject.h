@@ -11,7 +11,7 @@ using namespace std;
 class GameObject {
 public:
     GameObject();
-    GameObject(int layer);
+    explicit GameObject(int layer);
     ~GameObject();
 
     void Update(float dt);
@@ -22,6 +22,7 @@ public:
     void AddComponent(Component* cpt);
     void RemoveComponent(Component* cpt);
     Component *GetComponent(string type);
+    bool HasComponent(string type);
 
     int GetLayer();
     void SetLayer(int layer);

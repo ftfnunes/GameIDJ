@@ -18,7 +18,6 @@ Minion::Minion(GameObject &associated,
     auto scale = ((rand() % 501) + 1000) / 1000.0;
     sprite->SetScaleX(scale, scale);
     associated.AddComponent(sprite);
-    associated.AddComponent(new Collider(associated));
 
     auto r = Vec2(ORBIT_RADIUS, 0).Rotate(arc);
     auto correctedR = r - Vec2(associated.box.w/2, associated.box.h/2);
@@ -50,7 +49,7 @@ void Minion::Shoot(Vec2 target) {
                              MINION_BULLET_SPEED,
                              MINION_BULLET_DAMAGE,
                              MINION_BULLET_DISTANCE,
-                             "img/minionbullet2.png", 3, 0.1);
+                             "img/minionbullet2.png", 3, 0.1, true);
 
     auto minionCenter = associated.box.Center();
     bulletObj->AddComponent(bullet);

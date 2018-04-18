@@ -69,6 +69,14 @@ void State::Update(float dt) {
         }
     }
 
+    for (int i = 0; i < addedObjects.size(); ++i) {
+        auto objPtr = addedObjects[i].lock();
+        if (!objPtr->IsUpdated()) {
+            objPtr->Update(dt);
+        }
+    }
+    addedObjects.clear();
+
     for (auto &it: objectArray) {
         auto &objects = it.second;
         auto colliderArray = new Collider*[objects.size()];
@@ -171,6 +179,7 @@ weak_ptr<GameObject> State::AddObject(shared_ptr<GameObject> ptr) {
         (*ptr).Start();
     }
 
+    addedObjects.emplace_back(ptr);
     return weak_ptr<GameObject>(ptr);
 }
 

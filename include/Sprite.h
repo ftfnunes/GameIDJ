@@ -3,6 +3,7 @@
 #include "SDL_include.h"
 #include "Component.h"
 #include "Vec2.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
 class Sprite : public Component {
 public:
     Sprite(GameObject &associated);
-    explicit Sprite(GameObject &associated, string file, int frameCount = 1, float frameTime = 1);
+    explicit Sprite(GameObject &associated, string file, int frameCount = 1, float frameTime = 1, float secondsToSelfDestruct = 0);
     ~Sprite() override;
 
     void Update(float dt);
@@ -44,6 +45,8 @@ private:
     Vec2 scale;
     float timeElapsed;
     float frameTime;
+    Timer selfDestructCount;
+    float secondsToSelfDestruct;
 
     int getFrameWidth();
 };

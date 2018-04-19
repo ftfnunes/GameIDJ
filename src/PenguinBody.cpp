@@ -31,6 +31,12 @@ void PenguinBody::Update(float dt) {
         if (!pCannon.expired()) {
             (*pCannon.lock()).RequestDelete();
         }
+
+        auto explosionObj = new GameObject(associated.GetLayer());
+        auto explosionSprite = new Sprite(*explosionObj, "img/penguindeath.png", 5, 0.1, 0.5);
+        explosionObj->AddComponent(explosionSprite);
+        explosionObj->SetCenter(associated.box.Center());
+        Game::GetInstance().GetState().AddObject(explosionObj);
     } else {
         auto inputManager = InputManager::GetInstance();
 

@@ -18,6 +18,12 @@ Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMin
 void Alien::Update(float dt) {
     if (hp <= 0) {
         associated.RequestDelete();
+
+        auto explosionObj = new GameObject(associated.GetLayer());
+        auto explosionSprite = new Sprite(*explosionObj, "img/aliendeath.png", 4, 0.1, 0.4);
+        explosionObj->AddComponent(explosionSprite);
+        explosionObj->SetCenter(associated.box.Center());
+        Game::GetInstance().GetState().AddObject(explosionObj);
     } else {
         auto inputManager = InputManager::GetInstance();
 
@@ -116,4 +122,8 @@ void Alien::NotifyCollision(GameObject &other) {
     if (bullet != nullptr && !bullet->TargetsPlayer()) {
         hp -= bullet->GetDamage();
     }
+}
+
+int Alien::GetHp() {
+    return hp;
 }

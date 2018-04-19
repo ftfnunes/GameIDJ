@@ -5,6 +5,7 @@
 #include <GameObject.h>
 #include <Game.h>
 #include <Collider.h>
+#include <Alien.h>
 #include "Minion.h"
 #include "Bullet.h"
 
@@ -28,11 +29,22 @@ void Minion::Update(float dt) {
     if (alienCenter.expired()) {
         associated.RequestDelete();
     } else {
+        auto alienObj = alienCenter.lock();
+        auto alien = (Alien *)alienObj->GetComponent(ALIEN_TYPE);
+
+        if (alien->GetHp() <= 0) {
+            auto explosionObj = new GameObject(associated.GetLayer());
+            auto explosionSprite = new Sprite(*explosionObj, "img/miniondeath.png", 4, 0.1, 0.4);
+            explosionObj->AddComponent(explosionSprite);
+            explosionObj->SetCenter(associated.box.Center());
+            Game::GetInstance().GetState().AddObject(explosionObj);
+        }
+
         arc += MINION_ANG_SPEED*dt;
         auto r = Vec2(ORBIT_RADIUS, 0).Rotate(arc);
         associated.angleDeg = r.XAngleDeg();
         auto d = r - associated.box.Center();
-        this->associated.box += (*alienCenter.lock()).box.Center() + d;
+        this->associated.box += alienCenter.lock()->box.Center() + d;
     }
 }
 

@@ -8,11 +8,13 @@
 
 #include <memory>
 #include "GameObject.h"
+#include "Timer.h"
 
 #define CANNON_TYPE "PenguinCannon"
-#define PENGUIN_BULLET_SPEED 300
+#define PENGUIN_BULLET_SPEED 500
 #define PENGUIN_BULLET_DISTANCE 1000
 #define PENGUIN_BULLET_DAMAGE 10
+#define SHOOTING_COOLDOWN 0.4
 
 class PenguinCannon : public Component {
 public:
@@ -29,6 +31,7 @@ public:
 private:
     weak_ptr<GameObject> pBody;
     float angle;
+    Timer timer;
 };
 
 

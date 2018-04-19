@@ -31,6 +31,8 @@ public:
 
     void NotifyCollision(GameObject &other) override;
 
+    int GetHp();
+
 private:
     class Action {
     public:

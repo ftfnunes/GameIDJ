@@ -18,6 +18,7 @@ PenguinCannon::PenguinCannon(GameObject &associated, weak_ptr<GameObject> pengui
 }
 
 void PenguinCannon::Update(float dt) {
+    timer.Update(dt);
     if (pBody.expired()) {
         associated.RequestDelete();
     } else {
@@ -29,8 +30,9 @@ void PenguinCannon::Update(float dt) {
 
         angle = associated.angleDeg = (mousePos - bodyCenter).XAngleDeg();
 
-        if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
+        if (inputManager.IsMouseDown(LEFT_MOUSE_BUTTON) && timer.Get() > SHOOTING_COOLDOWN) {
             Shoot();
+            timer.Restart();
         }
     }
 }

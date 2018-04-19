@@ -32,6 +32,8 @@ public:
 
     void Damage(int damage);
 
+    Vec2 GetPosition();
+
     static PenguinBody *player;
 
 private:

@@ -9,6 +9,7 @@
 #include <Collider.h>
 #include <Bullet.h>
 #include <Camera.h>
+#include <Sound.h>
 #include "PenguinBody.h"
 
 PenguinBody *PenguinBody::player = nullptr;
@@ -24,7 +25,6 @@ PenguinBody::~PenguinBody() {
     player = nullptr;
 }
 
-
 void PenguinBody::Update(float dt) {
     if (hp <= 0) {
         associated.RequestDelete();
@@ -34,7 +34,9 @@ void PenguinBody::Update(float dt) {
 
         auto explosionObj = new GameObject(associated.GetLayer());
         auto explosionSprite = new Sprite(*explosionObj, "img/penguindeath.png", 5, 0.1, 0.5);
+        auto explosionSound = new Sound(*explosionObj, "audio/boom.wav");
         explosionObj->AddComponent(explosionSprite);
+        explosionObj->AddComponent(explosionSound);
         explosionObj->SetCenter(associated.box.Center());
         Game::GetInstance().GetState().AddObject(explosionObj);
     } else {
@@ -45,16 +47,6 @@ void PenguinBody::Update(float dt) {
                 Camera::Unfollow();
             } else {
                 Camera::Follow(&associated);
-            }
-        }
-
-        if (inputManager.KeyPress(SDLK_p)) {
-            if (associated.GetLayer() == 0) {
-                associated.SetLayer(1);
-                pCannon.lock()->SetLayer(1);
-            } else {
-                associated.SetLayer(0);
-                pCannon.lock()->SetLayer(0);
             }
         }
 
@@ -99,7 +91,7 @@ bool PenguinBody::Is(string type) {
 }
 
 void PenguinBody::Start() {
-    auto cannonObject = new GameObject();
+    auto cannonObject = new GameObject(associated.GetLayer()+1);
     auto associatedPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
     auto cannon = new PenguinCannon(*cannonObject, associatedPtr);
     cannonObject->AddComponent(cannon);
@@ -122,6 +114,10 @@ void PenguinBody::Damage(int damage) {
     if (hp <= 0) {
         Camera::Unfollow();
     }
+}
+
+Vec2 PenguinBody::GetPosition() {
+    return associated.box.Center();
 }
 
 

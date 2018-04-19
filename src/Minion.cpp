@@ -51,11 +51,9 @@ void Minion::Shoot(Vec2 target) {
                              MINION_BULLET_DISTANCE,
                              "img/minionbullet2.png", 3, 0.1, true);
 
-    auto minionCenter = associated.box.Center();
     bulletObj->AddComponent(bullet);
 
-    bulletObj->box.x = minionCenter.x - bulletObj->box.w/2;
-    bulletObj->box.y = minionCenter.y - bulletObj->box.h/2;
+    bulletObj->SetCenter(associated.box.Center());
 
     Game::GetInstance().GetState().AddObject(bulletObj);
 }

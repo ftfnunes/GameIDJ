@@ -22,9 +22,7 @@ void PenguinCannon::Update(float dt) {
         associated.RequestDelete();
     } else {
         auto bodyCenter = (*pBody.lock()).box.Center();
-        auto &box = associated.box;
-        box.x = bodyCenter.x - box.w/2;
-        box.y = bodyCenter.y - box.h/2;
+        associated.SetCenter(bodyCenter);
 
         auto inputManager = InputManager::GetInstance();
         auto mousePos = Camera::GetClickPosition(associated.GetLayer(), inputManager.GetMouse());
@@ -54,11 +52,9 @@ void PenguinCannon::Shoot() {
 
     bulletObj->AddComponent(bullet);
 
-    auto cannonCenter = associated.box.Center();
     auto cannonHole =  Vec2(associated.box.w/2, 0).RotateDeg(angle);
 
-    bulletObj->box.x = cannonCenter.x + - bulletObj->box.w/2;
-    bulletObj->box.y = cannonCenter.y - bulletObj->box.h/2;
+    bulletObj->SetCenter(associated.box.Center());
     bulletObj->box += cannonHole;
     Game::GetInstance().GetState().AddObject(bulletObj);
 }

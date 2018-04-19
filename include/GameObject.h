@@ -29,6 +29,8 @@ public:
     bool HasStarted();
     bool IsUpdated();
     void NotifyCollision(GameObject &other);
+    void SetCenter(Vec2 centerPos);
+
 
     Rect box;
     double angleDeg;

@@ -6,6 +6,7 @@
 #include <Collider.h>
 #include <Alien.h>
 #include <PenguinCannon.h>
+#include <PenguinBody.h>
 #include "Bullet.h"
 
 
@@ -49,7 +50,7 @@ int Bullet::GetDamage() {
 }
 
 void Bullet::NotifyCollision(GameObject &other) {
-    if (other.HasComponent(ALIEN_TYPE) &&  !targetsPlayer || other.HasComponent(CANNON_TYPE) &&  targetsPlayer) {
+    if (other.HasComponent(ALIEN_TYPE) &&  !targetsPlayer || other.HasComponent(BODY_TYPE) &&  targetsPlayer) {
         associated.RequestDelete();
     }
 }

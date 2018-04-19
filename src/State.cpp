@@ -17,7 +17,7 @@ State::State() : music("audio/stageState.ogg"),
                  bg(nullptr) {
 
     Camera::SetCameraHeight(5);
-    Camera::SetLayerHeight(1, 4.9);
+    Camera::SetLayerHeight(1, 4.5);
 
     bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
@@ -86,11 +86,11 @@ void State::Update(float dt) {
                 if (i == 0) {
                     colliderArray[j] = (Collider *)(*objects[j]).GetComponent(COLLIDER_TYPE);
                 }
-                if (colliderArray[i] == nullptr) {
+                if (i != 0 && colliderArray[i] == nullptr) {
                     break;
                 }
 
-                if (i != j && colliderArray[j] != nullptr) {
+                if (i != j && colliderArray[j] != nullptr && colliderArray[i] != nullptr) {
                     auto angleIRad = 2*M_PI*((*objects[i]).angleDeg/360);
                     auto angleJRad = 2*M_PI*((*objects[j]).angleDeg/360);
                     auto boxI = colliderArray[i]->box;

@@ -43,7 +43,7 @@ bool Minion::Is(string type) {
 }
 
 void Minion::Shoot(Vec2 target) {
-    auto bulletObj = new GameObject();
+    auto bulletObj = new GameObject(associated.GetLayer());
     auto bullet = new Bullet(*bulletObj,
                              (target - associated.box.Center()).XAngleDeg(),
                              MINION_BULLET_SPEED,

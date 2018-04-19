@@ -17,7 +17,7 @@ State::State() : music("audio/stageState.ogg"),
                  bg(nullptr) {
 
     Camera::SetCameraHeight(5);
-    Camera::SetLayerHeight(1, 4.3);
+    Camera::SetLayerHeight(1, 4.9);
 
     bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
@@ -57,7 +57,7 @@ void State::Update(float dt) {
     bg->Update(dt);
 
     quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
-
+    
     for (auto &it : objectArray) {
         auto &objects = it.second;
 

@@ -5,10 +5,10 @@
 #ifndef T1_COLLIDER_H
 #define T1_COLLIDER_H
 
-
 #include "GameObject.h"
 
 #define COLLIDER_TYPE "Collider"
+#define DEBUG
 
 class Collider : public Component {
 public:

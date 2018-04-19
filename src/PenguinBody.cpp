@@ -34,6 +34,24 @@ void PenguinBody::Update(float dt) {
     } else {
         auto inputManager = InputManager::GetInstance();
 
+        if (inputManager.KeyPress(SDLK_l)) {
+            if (Camera::IsFollowing()) {
+                Camera::Unfollow();
+            } else {
+                Camera::Follow(&associated);
+            }
+        }
+
+        if (inputManager.KeyPress(SDLK_p)) {
+            if (associated.GetLayer() == 0) {
+                associated.SetLayer(1);
+                pCannon.lock()->SetLayer(1);
+            } else {
+                associated.SetLayer(0);
+                pCannon.lock()->SetLayer(0);
+            }
+        }
+
         if (inputManager.IsKeyDown(A_KEY)) {
             angle -= BODY_ANGULAR_SPEED*dt;
         } else if (inputManager.IsKeyDown(D_KEY)) {

@@ -44,7 +44,7 @@ bool PenguinCannon::Is(string type) {
 }
 
 void PenguinCannon::Shoot() {
-    auto bulletObj = new GameObject();
+    auto bulletObj = new GameObject(associated.GetLayer());
     auto bullet = new Bullet(*bulletObj,
                              angle,
                              PENGUIN_BULLET_SPEED,

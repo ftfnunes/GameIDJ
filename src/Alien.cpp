@@ -3,87 +3,85 @@
 #include <Minion.h>
 #include <Game.h>
 #include <Camera.h>
+#include <Collider.h>
+#include <PenguinBody.h>
 #include "Alien.h"
 
-Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMinions(nMinions) {
+int Alien::alienCount = 0;
+
+Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMinions(nMinions), state(RESTING) {
     auto sprite = new Sprite(associated, "img/alien.png");
     associated.AddComponent(sprite);
+    associated.AddComponent(new Collider(associated, Vec2(0.65, 0.6), Vec2(-8, 0)));
 
+    alienCount++;
     hp = 30;
     speed = Vec2(0, 0);
 }
 
 void Alien::Update(float dt) {
-    auto inputManager = InputManager::GetInstance();
-
-
-    associated.angleDeg += ALIEN_ROTATION_SPEED*dt;
-
-    if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-        auto mousePos = inputManager.GetMouse() + Camera::pos;
-        taskQueue.push(Action(Action::SHOOT, mousePos.x, mousePos.y));
-    }
-    if (inputManager.MousePress(RIGHT_MOUSE_BUTTON)) {
-        auto mousePos = Camera::GetClickPosition(associated.GetLayer(), inputManager.GetMouse());
-        taskQueue.push(Action(Action::MOVE, mousePos.x, mousePos.y));
-    }
-
-    if (inputManager.KeyPress(SDLK_u)) {
-        if (associated.GetLayer() == 0) {
-            associated.SetLayer(1);
-        } else {
-            associated.SetLayer(0);
-        }
-    }
-
-    if (inputManager.KeyPress(SDLK_l)) {
-        if (Camera::IsFollowing()) {
-            Camera::Unfollow();
-        } else {
-            Camera::Follow(&associated);
-        }
-    }
-
-    if (!taskQueue.empty()) {
-        auto action = taskQueue.front();
-
-        if (action.type == Action::MOVE) {
-            auto dMod = ALIEN_SPEED*dt;
-            auto expectedD = action.pos - associated.box.Center();
-            auto effectiveD = Vec2(dMod, 0).Rotate(expectedD.XAngle());
-
-            if (expectedD.Module() < effectiveD.Module()) {
-                associated.box += expectedD;
-                taskQueue.pop();
-            } else {
-                associated.box += effectiveD;
-            }
-        } else {
-            auto minionObj = shared_ptr<GameObject>();
-            auto lastDistance = 0.0;
-            auto target = Vec2();
-
-            for (auto &it: minionArray) {
-                auto objPtr = it.lock();
-                auto &obj = (*objPtr);
-                auto tgt = Camera::GetClickPosition((*objPtr).GetLayer(), action.pos, false);
-                auto distance = obj.box.Center().Distance(tgt);
-                if (!minionObj || distance < lastDistance) {
-                    minionObj = objPtr;
-                    lastDistance = distance;
-                    target = tgt;
-                }
-            }
-
-            auto minion = (Minion *) (*minionObj).GetComponent("Minion");
-
-            minion->Shoot(target);
-            taskQueue.pop();
-        }
-    }
-
     if (hp <= 0) {
         associated.RequestDelete();
+
+        auto explosionObj = new GameObject(associated.GetLayer());
+        auto explosionSprite = new Sprite(*explosionObj, "img/aliendeath.png", 4, 0.1, 0.4);
+        explosionObj->AddComponent(explosionSprite);
+        explosionObj->SetCenter(associated.box.Center());
+        Game::GetInstance().GetState().AddObject(explosionObj);
+    } else {
+        auto inputManager = InputManager::GetInstance();
+
+        associated.angleDeg += ALIEN_ROTATION_SPEED*dt;
+
+        if (inputManager.KeyPress(SDLK_u)) {
+            if (associated.GetLayer() == 0) {
+                associated.SetLayer(1);
+            } else {
+                associated.SetLayer(0);
+            }
+        }
+        
+        if (PenguinBody::player != nullptr) {
+            if (state == RESTING) {
+                restTimer.Update(dt);
+
+                if (restTimer.Get() > ALIEN_COOLDOWN) {
+                    restTimer.Restart();
+                    state = MOVING;
+
+                    destination = PenguinBody::player->GetPosition();
+                    auto expectedD = destination - associated.box.Center();
+                    speed = Vec2(ALIEN_SPEED, 0).Rotate(expectedD.XAngle());
+                }
+            } else {
+                auto expectedD = destination - associated.box.Center();
+                auto effectiveD = speed*dt;
+
+                if (expectedD.Module() < effectiveD.Module()) {
+                    associated.box += expectedD;
+
+                    auto minionObj = shared_ptr<GameObject>();
+                    auto lastDistance = 0.0;
+                    auto target = PenguinBody::player->GetPosition();
+
+                    for (auto &it: minionArray) {
+                        auto objPtr = it.lock();
+                        auto distance = objPtr->box.Center().Distance(target);
+                        if (!minionObj || distance < lastDistance) {
+                            minionObj = objPtr;
+                            lastDistance = distance;
+                        }
+                    }
+
+                    auto minion = (Minion *) (*minionObj).GetComponent("Minion");
+
+                    state = RESTING;
+                    minion->Shoot(target);
+                } else {
+                    associated.box += effectiveD;
+                }
+            }
+        }
     }
 }
 
@@ -103,15 +101,24 @@ void Alien::Start() {
     }
 }
 
-Alien::Action::Action(Alien::Action::ActionType type, float x, float y) : type(type) {
-    pos.x = x;
-    pos.y = y;
-}
-
 Alien::~Alien() {
     for (auto &it : minionArray) {
         (*it.lock()).RequestDelete();
     }
-
     minionArray.clear();
+
+    alienCount--;
+}
+
+
+void Alien::NotifyCollision(GameObject &other) {
+    auto bullet = (Bullet *) other.GetComponent(BULLET_TYPE);
+
+    if (bullet != nullptr && !bullet->TargetsPlayer()) {
+        hp -= bullet->GetDamage();
+    }
+}
+
+int Alien::GetHp() {
+    return hp;
 }

@@ -5,11 +5,14 @@
 #include <Resources.h>
 #include <Camera.h>
 
-Sprite::Sprite(GameObject &associated) : Component(associated), scale(Vec2(1, 1)) {
+Sprite::Sprite(GameObject &associated) : Component(associated), scale(Vec2(1, 1)), frameCount(0), frameTime(0), timeElapsed(0), currentFrame(0) {
     texture = nullptr;
 }
 
-Sprite::Sprite(GameObject &associated, string file) : Sprite(associated) {
+Sprite::Sprite(GameObject &associated, string file, int frameCount, float frameTime, float secondsToSelfDestruct) : Sprite(associated) {
+    this->frameCount = frameCount;
+    this->frameTime = frameTime;
+    this->secondsToSelfDestruct = secondsToSelfDestruct;
     Open(file);
 }
 
@@ -19,10 +22,11 @@ void Sprite::Open(string file) {
     texture = Resources::GetImage(file);
 
     SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-    associated.box.h = height;
-    associated.box.w = width;
 
-    SetClip(0, 0, width, height);
+    associated.box.h = GetHeight();
+    associated.box.w = GetWidth();
+
+    SetClip(0, 0, getFrameWidth(), height);
 }
 
 void Sprite::SetClip(int x, int y, int w, int h) {
@@ -32,6 +36,10 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.h = h;
 }
 
+
+void Sprite::SetClip(int x, int y) {
+    SetClip(x, y, clipRect.w, clipRect.h);
+}
 
 void Sprite::Render(float x, float y, int layer) {
     Game &game = Game::GetInstance();
@@ -70,10 +78,28 @@ bool Sprite::Is(string type) {
     return type == SPRITE_TYPE;
 }
 
-void Sprite::Update(float dt) {}
+void Sprite::Update(float dt) {
+    timeElapsed += dt;
+
+    if (secondsToSelfDestruct > 0) {
+        selfDestructCount.Update(dt);
+        if (selfDestructCount.Get() > secondsToSelfDestruct) {
+            associated.RequestDelete();
+        }
+    }
+
+    if (timeElapsed >= frameTime) {
+        auto nextFrame = currentFrame+1;
+        if (nextFrame == frameCount) {
+            nextFrame = 0;
+        }
+        SetFrame(nextFrame);
+        timeElapsed = 0;
+    }
+}
 
 int Sprite::GetWidth() {
-    return width*scale.x;
+    return getFrameWidth()*scale.x;
 }
 
 void Sprite::SetScaleX(float scaleX, float scaleY) {
@@ -81,8 +107,8 @@ void Sprite::SetScaleX(float scaleX, float scaleY) {
     scale.y = scaleY == 0 ? scale.y : scaleY;
     auto &box = associated.box;
     auto center = box.Center();
-    box.w = width*scaleX;
-    box.h = height*scaleY;
+    box.w = GetWidth();
+    box.h = GetHeight();
     box.x = center.x - box.w/2;
     box.y = center.y - box.h/2;
 }
@@ -90,4 +116,26 @@ void Sprite::SetScaleX(float scaleX, float scaleY) {
 Vec2 Sprite::GetScale() {
     return scale;
 }
+
+void Sprite::SetFrame(int frame) {
+    currentFrame = frame;
+
+    SetClip(getFrameWidth()*frame, 0);
+}
+
+void Sprite::SetFrameCount(int frameCount) {
+    this->frameCount = frameCount;
+
+    associated.box.w = GetWidth();
+    SetClip(0, clipRect.y, getFrameWidth(), clipRect.h);
+}
+
+void Sprite::SetFrameTime(int frameTime) {
+    this->frameTime = frameTime;
+}
+
+int Sprite::getFrameWidth() {
+    return width/frameCount;
+}
+
 

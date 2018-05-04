@@ -5,6 +5,9 @@
 #include <CameraFollower.h>
 #include <Alien.h>
 #include <algorithm>
+#include <PenguinBody.h>
+#include <Collider.h>
+#include <Collision.h>
 
 
 State::State() : music("audio/stageState.ogg"),
@@ -14,7 +17,7 @@ State::State() : music("audio/stageState.ogg"),
                  bg(nullptr) {
 
     Camera::SetCameraHeight(5);
-    Camera::SetLayerHeight(1, 4.3);
+    Camera::SetLayerHeight(1, 4.5);
 
     bg = new GameObject();
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
@@ -30,9 +33,16 @@ State::State() : music("audio/stageState.ogg"),
 
     auto alienObject = new GameObject(1);
     alienObject->box = Rect(512, 300, 0, 0);
-    auto alien = new Alien(*alienObject, 3);
+    auto alien = new Alien(*alienObject, 5);
     alienObject->AddComponent(alien);
     AddObject(alienObject);
+
+    auto playerObject = new GameObject();
+    playerObject->box = Rect(704, 640);
+    playerObject->AddComponent(new PenguinBody(*playerObject));
+    AddObject(playerObject);
+
+    Camera::Follow(playerObject);
 
     music.Play();
 }
@@ -47,7 +57,7 @@ void State::Update(float dt) {
     bg->Update(dt);
 
     quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
-
+    
     for (auto &it : objectArray) {
         auto &objects = it.second;
 
@@ -55,6 +65,42 @@ void State::Update(float dt) {
             auto obj = objects[i];
             if (!obj->IsUpdated()) {
                 obj->Update(dt);
+            }
+        }
+    }
+
+    for (int i = 0; i < addedObjects.size(); ++i) {
+        auto objPtr = addedObjects[i].lock();
+        if (!objPtr->IsUpdated()) {
+            objPtr->Update(dt);
+        }
+    }
+    addedObjects.clear();
+
+    for (auto &it: objectArray) {
+        auto &objects = it.second;
+        auto colliderArray = new Collider*[objects.size()];
+        memset(colliderArray, 0, objects.size()*sizeof(Collider *));
+        for (int i = 0; i < objects.size(); ++i) {
+            for (int j = i; j < objects.size(); ++j) {
+                if (i == 0) {
+                    colliderArray[j] = (Collider *)(*objects[j]).GetComponent(COLLIDER_TYPE);
+                }
+                if (i != 0 && colliderArray[i] == nullptr) {
+                    break;
+                }
+
+                if (i != j && colliderArray[j] != nullptr && colliderArray[i] != nullptr) {
+                    auto angleIRad = 2*M_PI*((*objects[i]).angleDeg/360);
+                    auto angleJRad = 2*M_PI*((*objects[j]).angleDeg/360);
+                    auto boxI = colliderArray[i]->box;
+                    auto boxJ = colliderArray[j]->box;
+
+                    if (Collision::IsColliding(boxI, boxJ, angleIRad, angleJRad)) {
+                        (*objects[i]).NotifyCollision((*objects[j]));
+                        (*objects[j]).NotifyCollision((*objects[i]));
+                    }
+                }
             }
         }
     }
@@ -133,6 +179,7 @@ weak_ptr<GameObject> State::AddObject(shared_ptr<GameObject> ptr) {
         (*ptr).Start();
     }
 
+    addedObjects.emplace_back(ptr);
     return weak_ptr<GameObject>(ptr);
 }
 

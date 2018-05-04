@@ -44,14 +44,29 @@ Vec2 Vec2::Rotate(float angle) {
     return { x*cosO - y*sinO, x*sinO + y*cosO };
 }
 
-void Vec2::operator+=(Vec2 v) {
-    *this = *this + v;
+Vec2 Vec2::RotateDeg(float angle) {
+    auto rad = 2*M_PI*(angle/360.0);
+    float cosO = cos(rad);
+    float sinO = sin(rad);
+    return { x*cosO - y*sinO, x*sinO + y*cosO };
 }
 
 float Vec2::XAngleDeg() {
     return (XAngle()/(2*M_PI))*360;
 }
 
+void Vec2::operator+=(Vec2 v) {
+    *this = *this + v;
+}
+
+
+void Vec2::operator-=(Vec2 v) {
+    *this = *this - v;
+}
+
 void Vec2::operator*=(float scalar) {
     *this = *this * scalar;
 }
+
+
+

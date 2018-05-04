@@ -12,7 +12,7 @@
 #define ORBIT_RADIUS 100
 #define MINION_TYPE "Minion"
 
-#define MINION_BULLET_SPEED 100
+#define MINION_BULLET_SPEED 300
 #define MINION_BULLET_DISTANCE 600
 #define MINION_BULLET_DAMAGE 10
 
@@ -29,7 +29,7 @@ public:
     void Shoot(Vec2 target);
 
 private:
-    GameObject &alienCenter;
+    weak_ptr<GameObject> alienCenter;
     float arc;
 };
 

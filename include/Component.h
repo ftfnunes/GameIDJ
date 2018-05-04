@@ -18,6 +18,7 @@ public:
     virtual void Start();
     virtual void Render() = 0;
     virtual bool Is(string type) = 0;
+    virtual void NotifyCollision(GameObject &other);
 
 protected:
     GameObject& associated;

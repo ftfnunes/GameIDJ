@@ -38,7 +38,7 @@ Mix_Music *Resources::GetMusic(string file) {
     } else {
         auto music = Mix_LoadMUS((ASSETS_PATH + file).c_str());
         if (music == nullptr) {
-            throw "Error loading music: " + file + ". Reason: " + string(SDL_GetError());
+            throw "Error loading backgroundMusic: " + file + ". Reason: " + string(SDL_GetError());
         }
 
         musicTable.insert(make_pair(file, music));

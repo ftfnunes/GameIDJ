@@ -38,7 +38,7 @@ void PenguinBody::Update(float dt) {
         explosionObj->AddComponent(explosionSprite);
         explosionObj->AddComponent(explosionSound);
         explosionObj->SetCenter(associated.box.Center());
-        Game::GetInstance().GetState().AddObject(explosionObj);
+        Game::GetInstance().GetCurrentState().AddObject(explosionObj);
     } else {
         auto inputManager = InputManager::GetInstance();
 
@@ -92,11 +92,11 @@ bool PenguinBody::Is(string type) {
 
 void PenguinBody::Start() {
     auto cannonObject = new GameObject(associated.GetLayer()+1);
-    auto associatedPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
+    auto associatedPtr = Game::GetInstance().GetCurrentState().GetObjectPtr(&associated);
     auto cannon = new PenguinCannon(*cannonObject, associatedPtr);
     cannonObject->AddComponent(cannon);
 
-    pCannon = Game::GetInstance().GetState().AddObject(cannonObject);
+    pCannon = Game::GetInstance().GetCurrentState().AddObject(cannonObject);
 }
 
 void PenguinBody::NotifyCollision(GameObject &other) {

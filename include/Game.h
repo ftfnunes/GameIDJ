@@ -1,8 +1,9 @@
 #define INCLUDE_SDL
+
+#include <stack>
+#include <memory>
 #include "SDL_include.h"
 #include "State.h"
-
-#define ASSETS_PATH "assets/"
 
 #define GAME_NAME "Fernando_14/0039678"
 #define WIDTH 1024
@@ -19,17 +20,24 @@ class Game {
     static Game& GetInstance();
     void Run();
     SDL_Renderer *GetRenderer();
-    State& GetState();
+
+    State &GetCurrentState();
+
+    void Push(State *state);
+
     float GetDeltaTime();
   private:
     static Game *instance;
 
     Game(string title, int width, int height);
     void CalculateDeltaTime();
+    State &push();
+
+    State *storedState;
+    stack<unique_ptr<State>> stateStack;
 
     SDL_Window *window;
     SDL_Renderer *renderer;
-    State *state;
     int framestart;
     float dt;
 };

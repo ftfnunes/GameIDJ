@@ -27,7 +27,7 @@ void Alien::Update(float dt) {
         auto explosionSprite = new Sprite(*explosionObj, "img/aliendeath.png", 4, 0.1, 0.4);
         explosionObj->AddComponent(explosionSprite);
         explosionObj->SetCenter(associated.box.Center());
-        Game::GetInstance().GetState().AddObject(explosionObj);
+        Game::GetInstance().GetCurrentState().AddObject(explosionObj);
     } else {
         auto inputManager = InputManager::GetInstance();
 
@@ -94,8 +94,8 @@ bool Alien::Is(string type) {
 void Alien::Start() {
     for (int i = 0; i < nMinions; ++i) {
         auto minionObj = new GameObject();
-        auto objPtr = Game::GetInstance().GetState().AddObject(minionObj);
-        auto alienPtr = Game::GetInstance().GetState().GetObjectPtr(&associated);
+        auto objPtr = Game::GetInstance().GetCurrentState().AddObject(minionObj);
+        auto alienPtr = Game::GetInstance().GetCurrentState().GetObjectPtr(&associated);
         minionObj->AddComponent(new Minion(*minionObj, alienPtr, 2*M_PI*(i/(float)nMinions)));
         minionArray.push_back(objPtr);
     }

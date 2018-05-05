@@ -58,6 +58,6 @@ void PenguinCannon::Shoot() {
 
     bulletObj->SetCenter(associated.box.Center());
     bulletObj->box += cannonHole;
-    Game::GetInstance().GetState().AddObject(bulletObj);
+    Game::GetInstance().GetCurrentState().AddObject(bulletObj);
 }
 

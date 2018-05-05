@@ -75,7 +75,7 @@ int GameObject::GetLayer() {
 }
 
 void GameObject::SetLayer(int layer) {
-    auto &state = Game::GetInstance().GetState();
+    auto &state = Game::GetInstance().GetCurrentState();
     auto obj = state.PopObjectPtr(this);
     this->layer = layer;
     if (obj) {

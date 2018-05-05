@@ -6,6 +6,7 @@
 #include <Game.h>
 #include <Collider.h>
 #include <Alien.h>
+#include <Sprite.h>
 #include "Minion.h"
 #include "Bullet.h"
 
@@ -37,7 +38,7 @@ void Minion::Update(float dt) {
             auto explosionSprite = new Sprite(*explosionObj, "img/miniondeath.png", 4, 0.1, 0.4);
             explosionObj->AddComponent(explosionSprite);
             explosionObj->SetCenter(associated.box.Center());
-            Game::GetInstance().GetState().AddObject(explosionObj);
+            Game::GetInstance().GetCurrentState().AddObject(explosionObj);
         }
 
         arc += MINION_ANG_SPEED*dt;
@@ -67,5 +68,5 @@ void Minion::Shoot(Vec2 target) {
 
     bulletObj->SetCenter(associated.box.Center());
 
-    Game::GetInstance().GetState().AddObject(bulletObj);
+    Game::GetInstance().GetCurrentState().AddObject(bulletObj);
 }

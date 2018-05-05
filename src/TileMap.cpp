@@ -2,6 +2,7 @@
 #include <Game.h>
 #include <GameObject.h>
 #include <Camera.h>
+#include <TileMap.h>
 
 TileMap::TileMap(GameObject &associated, string file, TileSet *tileSet) : Component(associated),
                                                                           tileSet(tileSet) {

@@ -19,10 +19,10 @@ Music::Music(string file) {
 
 void Music::Play(int times) {
     if (music == nullptr) {
-        throw "No music loaded";
+        throw "No backgroundMusic loaded";
     }
     if (Mix_PlayMusic(music, times) != 0) {
-        throw "There was an error playing the music. Reason: " + string(SDL_GetError());
+        throw "There was an error playing the backgroundMusic. Reason: " + string(SDL_GetError());
     }
 }
 

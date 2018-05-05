@@ -48,7 +48,7 @@ Game::Game(string title, int width, int height) : dt(0), framestart(0)   {
         }
 
         //Initialize state
-        state = new State();
+        storedState = nullptr;
     } else {
         throw "There are two instances of game created.";
     }
@@ -56,7 +56,13 @@ Game::Game(string title, int width, int height) : dt(0), framestart(0)   {
 }
 
 Game::~Game() {
-    delete state;
+    if (storedState != nullptr) {
+        delete storedState;
+    }
+
+    while (stateStack.empty()) {
+        stateStack.pop();
+    }
 
     // Destroy window and renderer
     SDL_DestroyRenderer(renderer);
@@ -70,17 +76,49 @@ Game::~Game() {
     IMG_Quit();
 }
 
-State& Game::GetState() {
-    return *state;
+State& Game::GetCurrentState() {
+    return *(unique_ptr<State> &)stateStack.top();
+}
+
+void Game::Push(State *state) {
+    storedState = state;
+}
+
+State &Game::push() {
+    stateStack.emplace(storedState);
+    storedState = nullptr;
+
+    auto &state = GetCurrentState();
+    state.Start();
+    return state;
 }
 
 void Game::Run() {
-    state->Start();
-    while (!state->QuitRequested()) {
+    if (storedState == nullptr) {
+        throw "No initial state";
+    }
+    State &state = push();
+
+    while (!stateStack.empty() && !(state = GetCurrentState()).QuitRequested()) {
+        if (state.QuitRequested()) {
+            stateStack.pop();
+            if (!stateStack.empty()) {
+                state = GetCurrentState();
+                state.Resume();
+            }
+        }
+
+        if (storedState != nullptr) {
+            if (!stateStack.empty()) {
+                state.Pause();
+            }
+            state = push();
+        }
+
         CalculateDeltaTime();
         InputManager::GetInstance().Update();
-        state->Update(dt);
-        state->Render();
+        state.Update(dt);
+        state.Render();
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
     }

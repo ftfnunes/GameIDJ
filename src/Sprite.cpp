@@ -4,6 +4,7 @@
 #include <GameObject.h>
 #include <Resources.h>
 #include <Camera.h>
+#include <Sprite.h>
 
 Sprite::Sprite(GameObject &associated) : Component(associated), scale(Vec2(1, 1)), frameCount(0), frameTime(0), timeElapsed(0), currentFrame(0) {
     texture = nullptr;

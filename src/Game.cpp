@@ -84,12 +84,12 @@ void Game::Push(State *state) {
     storedState = state;
 }
 
-State &Game::push() {
+State *Game::push() {
     stateStack.emplace(storedState);
     storedState = nullptr;
 
-    auto &state = GetCurrentState();
-    state.Start();
+    State *state = &GetCurrentState();
+    state->Start();
     return state;
 }
 
@@ -97,30 +97,33 @@ void Game::Run() {
     if (storedState == nullptr) {
         throw "No initial state";
     }
-    State &state = push();
 
-    while (!stateStack.empty() && !(state = GetCurrentState()).QuitRequested()) {
-        if (state.QuitRequested()) {
+    push();
+    while (!stateStack.empty() && !GetCurrentState().QuitRequested()) {
+        State *state = &GetCurrentState();
+        if (state->PopRequested()) {
             stateStack.pop();
             if (!stateStack.empty()) {
-                state = GetCurrentState();
-                state.Resume();
+                state = &GetCurrentState();
+                state->Resume();
             }
         }
 
         if (storedState != nullptr) {
             if (!stateStack.empty()) {
-                state.Pause();
+                state->Pause();
             }
             state = push();
         }
 
-        CalculateDeltaTime();
-        InputManager::GetInstance().Update();
-        state.Update(dt);
-        state.Render();
-        SDL_RenderPresent(renderer);
-        SDL_Delay(33);
+        if (!stateStack.empty()) {
+            CalculateDeltaTime();
+            InputManager::GetInstance().Update();
+            state->Update(dt);
+            state->Render();
+            SDL_RenderPresent(renderer);
+            SDL_Delay(33);
+        }
     }
     Resources::ClearImages();
     Resources::ClearMusics();

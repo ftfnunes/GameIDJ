@@ -55,7 +55,9 @@ void StageState::Update(float dt) {
     Camera::Update(dt);
     bg->Update(dt);
 
-    quitRequested = inputManager.KeyPress(ESCAPE_KEY) || inputManager.QuitRequested();
+    quitRequested = inputManager.QuitRequested();
+
+    popRequested = inputManager.KeyPress(ESCAPE_KEY);
 
     UpdateArray(dt);
 

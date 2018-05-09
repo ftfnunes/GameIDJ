@@ -32,6 +32,7 @@ class Game {
     Game(string title, int width, int height);
     void CalculateDeltaTime();
     State *push();
+    void clearResources();
 
     State *storedState;
     stack<unique_ptr<State>> stateStack;

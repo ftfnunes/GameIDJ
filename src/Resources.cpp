@@ -1,9 +1,9 @@
 #include <Game.h>
 #include "Resources.h"
 
-unordered_map<string, SDL_Texture*> Resources::imageTable;
-unordered_map<string, Mix_Music*> Resources::musicTable;
-unordered_map<string, Mix_Chunk*> Resources::soundTable;
+unordered_map<string, shared_ptr<SDL_Texture>> Resources::imageTable;
+unordered_map<string, shared_ptr<Mix_Music>> Resources::musicTable;
+unordered_map<string, shared_ptr<Mix_Chunk>> Resources::soundTable;
 
 shared_ptr<SDL_Texture> Resources::GetImage(string file) {
     auto it = imageTable.find(file);
@@ -14,11 +14,11 @@ shared_ptr<SDL_Texture> Resources::GetImage(string file) {
         if (texture == nullptr) {
             throw "Error loading texture from image: " + file;
         }
-        auto txt_ptr = shared_ptr<SDL_Texture>(texture, [] (SDL_Texture *texture) -> {
+        auto texturePtr = shared_ptr<SDL_Texture>(texture, [] (SDL_Texture *texture) -> void {
             SDL_DestroyTexture(texture);
         });
-        imageTable.insert(make_pair(file, txt_ptr));
-        return txt_ptr;
+        imageTable.insert(make_pair(file, texturePtr));
+        return texturePtr;
     }
 }
 
@@ -31,7 +31,7 @@ void Resources::ClearImages() {
     }
 }
 
-Mix_Music *Resources::GetMusic(string file) {
+shared_ptr<Mix_Music> Resources::GetMusic(string file) {
     auto it = musicTable.find(file);
     if (it != musicTable.end()) {
         return (*it).second;
@@ -41,19 +41,24 @@ Mix_Music *Resources::GetMusic(string file) {
             throw "Error loading backgroundMusic: " + file + ". Reason: " + string(SDL_GetError());
         }
 
-        musicTable.insert(make_pair(file, music));
-        return music;
+        auto musicPtr = shared_ptr<Mix_Music>(music, [] (Mix_Music *music) -> void {
+            Mix_FreeMusic(music);
+        });
+
+        musicTable.insert(make_pair(file, musicPtr));
+        return musicPtr;
     }
 }
 
 void Resources::ClearMusics() {
     for (auto it = musicTable.begin(); it != musicTable.end(); ++it) {
-        Mix_FreeMusic((*it).second);
+        if (((*it).second).unique()) {
+            musicTable.erase((*it).first);
+        }
     }
-    musicTable.clear();
 }
 
-Mix_Chunk *Resources::GetSound(string file) {
+shared_ptr<Mix_Chunk> Resources::GetSound(string file) {
     auto it = soundTable.find(file);
     if (it != soundTable.end()) {
         return (*it).second;
@@ -63,14 +68,19 @@ Mix_Chunk *Resources::GetSound(string file) {
             throw "Error loading file: " + file + ". Reason: " + string(SDL_GetError());
         }
 
-        soundTable.insert(make_pair(file, chunk));
-        return chunk;
+        auto chunkPtr = shared_ptr<Mix_Chunk>(chunk, [] (Mix_Chunk *sound) -> void {
+            Mix_FreeChunk(sound);
+        });
+
+        soundTable.insert(make_pair(file, chunkPtr));
+        return chunkPtr;
     }
 }
 
 void Resources::ClearSounds() {
     for (auto it = soundTable.begin(); it != soundTable.end(); ++it) {
-        Mix_FreeChunk((*it).second);
+        if (((*it).second).unique()) {
+            soundTable.erase((*it).first);
+        }
     }
-    soundTable.clear();
 }

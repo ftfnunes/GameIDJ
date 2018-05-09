@@ -21,7 +21,7 @@ void Music::Play(int times) {
     if (music == nullptr) {
         throw "No backgroundMusic loaded";
     }
-    if (Mix_PlayMusic(music, times) != 0) {
+    if (Mix_PlayMusic(music.get(), times) != 0) {
         throw "There was an error playing the backgroundMusic. Reason: " + string(SDL_GetError());
     }
 }

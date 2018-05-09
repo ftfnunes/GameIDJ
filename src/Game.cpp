@@ -103,6 +103,7 @@ void Game::Run() {
         State *state = &GetCurrentState();
         if (state->PopRequested()) {
             stateStack.pop();
+            clearResources();
             if (!stateStack.empty()) {
                 state = &GetCurrentState();
                 state->Resume();
@@ -125,9 +126,11 @@ void Game::Run() {
             SDL_Delay(33);
         }
     }
-    Resources::ClearImages();
-    Resources::ClearMusics();
-    Resources::ClearSounds();
+
+    while (!stateStack.empty()) {
+        stateStack.pop();
+    }
+    clearResources();
 }
 
 SDL_Renderer* Game::GetRenderer() {
@@ -151,4 +154,10 @@ void Game::CalculateDeltaTime() {
     auto deltaTicks = ticks - framestart;
     dt = deltaTicks/1000.0f;
     framestart = ticks;
+}
+
+void Game::clearResources() {
+    Resources::ClearImages();
+    Resources::ClearMusics();
+    Resources::ClearSounds();
 }

@@ -22,7 +22,7 @@ Sprite::~Sprite() = default;
 void Sprite::Open(string file) {
     texture = Resources::GetImage(file);
 
-    SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+    SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
 
     associated.box.h = GetHeight();
     associated.box.w = GetWidth();
@@ -49,7 +49,7 @@ void Sprite::Render(float x, float y, int layer) {
     auto renderPos = Camera::GetRenderPosition(Vec2(x, y), layerScale);
     SDL_Rect dstRect = { renderPos.x, renderPos.y, (int)(clipRect.w*scale.x*layerScale)+1, (int)(clipRect.h*scale.y*layerScale)+1 };
     SDL_RenderCopyEx(game.GetRenderer(),
-                     texture,
+                     texture.get(),
                      &clipRect,
                      &dstRect,
                      associated.angleDeg,

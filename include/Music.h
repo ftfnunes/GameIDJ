@@ -17,7 +17,7 @@ public:
     void Open(string file);
     bool IsOpen();
 private:
-    Mix_Music *music;
+    shared_ptr<Mix_Music> music;
 };
 
 #endif

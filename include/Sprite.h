@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 #include "Component.h"
@@ -36,7 +37,7 @@ public:
     void SetFrameCount(int frameCount);
     void SetFrameTime(int frameTime);
 private:
-    SDL_Texture *texture;
+    shared_ptr<SDL_Texture> texture;
     SDL_Rect clipRect;
     int width;
     int height;

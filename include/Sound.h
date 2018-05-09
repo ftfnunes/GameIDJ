@@ -25,7 +25,7 @@ public:
     bool Is(string type) override ;
 
 private:
-    Mix_Chunk* chunk;
+    shared_ptr<Mix_Chunk> chunk;
     int channel;
 };
 

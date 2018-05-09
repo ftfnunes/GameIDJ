@@ -37,6 +37,7 @@ void PenguinBody::Update(float dt) {
         auto explosionSound = new Sound(*explosionObj, "audio/boom.wav");
         explosionObj->AddComponent(explosionSprite);
         explosionObj->AddComponent(explosionSound);
+        explosionSound->Play();
         explosionObj->SetCenter(associated.box.Center());
         Game::GetInstance().GetCurrentState().AddObject(explosionObj);
     } else {

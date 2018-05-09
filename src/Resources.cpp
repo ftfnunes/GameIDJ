@@ -1,9 +1,11 @@
 #include <Game.h>
+#include <memory>
 #include "Resources.h"
 
 unordered_map<string, shared_ptr<SDL_Texture>> Resources::imageTable;
 unordered_map<string, shared_ptr<Mix_Music>> Resources::musicTable;
 unordered_map<string, shared_ptr<Mix_Chunk>> Resources::soundTable;
+unordered_map<string, shared_ptr<TTF_Font>> Resources::fontTable;
 
 shared_ptr<SDL_Texture> Resources::GetImage(string file) {
     auto it = imageTable.find(file);
@@ -81,6 +83,34 @@ void Resources::ClearSounds() {
     for (auto it = soundTable.begin(); it != soundTable.end(); ++it) {
         if (((*it).second).unique()) {
             soundTable.erase((*it).first);
+        }
+    }
+}
+
+shared_ptr<TTF_Font> Resources::GetFont(string file, int size) {
+    auto key = file + to_string(size);
+    auto it = fontTable.find(key);
+    if (it != fontTable.end()) {
+        return (*it).second;
+    } else {
+        auto font = TTF_OpenFont((ASSETS_PATH + file).c_str(), size);
+        if (font == nullptr) {
+            throw "Error loading file: " + file + ". Reason: " + string(SDL_GetError());
+        }
+
+        auto fontPtr = shared_ptr<TTF_Font>(font, [] (TTF_Font *font) -> void {
+            TTF_CloseFont(font);
+        });
+
+        fontTable.insert(make_pair(key, fontPtr));
+        return fontPtr;
+    }
+}
+
+void Resources::ClearFonts() {
+    for (auto it = fontTable.begin(); it != fontTable.end(); ++it) {
+        if (((*it).second).unique()) {
+            fontTable.erase((*it).first);
         }
     }
 }

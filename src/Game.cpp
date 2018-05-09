@@ -4,6 +4,7 @@
 
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
+#define INCLUDE_SDL_TTF
 #include "SDL_include.h"
 #include "Game.h"
 
@@ -23,6 +24,11 @@ Game::Game(string title, int width, int height) : dt(0), framestart(0)   {
         // Initialize SDL_IMG
         if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) != (IMG_INIT_JPG | IMG_INIT_PNG)) {
             throw "Error initializing SDL_Image";
+        }
+
+        //Initialize SDL_TTF
+        if (TTF_Init() != 0) {
+            throw "Error initializing SDL_TTF";
         }
 
         // Initialize SDL_MIXER
@@ -71,6 +77,9 @@ Game::~Game() {
     // Destroy SDL_Mixer
     Mix_CloseAudio();
     Mix_Quit();
+
+    // Destroy SDL_TTF
+    TTF_Quit();
 
     // Destroy SDL_Img
     IMG_Quit();
@@ -160,4 +169,5 @@ void Game::clearResources() {
     Resources::ClearImages();
     Resources::ClearMusics();
     Resources::ClearSounds();
+    Resources::ClearFonts();
 }

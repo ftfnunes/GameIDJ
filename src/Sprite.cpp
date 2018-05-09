@@ -44,7 +44,6 @@ void Sprite::SetClip(int x, int y) {
 
 void Sprite::Render(float x, float y, int layer) {
     Game &game = Game::GetInstance();
-    auto cameraPos = Camera::pos;
     auto layerScale = Camera::GetLayerScale(layer);
     auto renderPos = Camera::GetRenderPosition(Vec2(x, y), layerScale);
     SDL_Rect dstRect = { renderPos.x, renderPos.y, (int)(clipRect.w*scale.x*layerScale)+1, (int)(clipRect.h*scale.y*layerScale)+1 };

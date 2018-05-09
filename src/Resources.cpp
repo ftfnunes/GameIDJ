@@ -1,7 +1,3 @@
-//
-// Created by ftfnunes on 29/03/18.
-//
-
 #include <Game.h>
 #include "Resources.h"
 
@@ -9,7 +5,7 @@ unordered_map<string, SDL_Texture*> Resources::imageTable;
 unordered_map<string, Mix_Music*> Resources::musicTable;
 unordered_map<string, Mix_Chunk*> Resources::soundTable;
 
-SDL_Texture *Resources::GetImage(string file) {
+shared_ptr<SDL_Texture> Resources::GetImage(string file) {
     auto it = imageTable.find(file);
     if (it != imageTable.end()) {
         return (*it).second;
@@ -18,17 +14,21 @@ SDL_Texture *Resources::GetImage(string file) {
         if (texture == nullptr) {
             throw "Error loading texture from image: " + file;
         }
-
-        imageTable.insert(make_pair(file, texture));
-        return texture;
+        auto txt_ptr = shared_ptr<SDL_Texture>(texture, [] (SDL_Texture *texture) -> {
+            SDL_DestroyTexture(texture);
+        });
+        imageTable.insert(make_pair(file, txt_ptr));
+        return txt_ptr;
     }
 }
 
 void Resources::ClearImages() {
     for (auto it = imageTable.begin(); it != imageTable.end() ; ++it) {
-        SDL_DestroyTexture((*it).second);
+        auto ptr = (*it).second;
+        if (ptr.unique()) {
+            imageTable.erase((*it).first);
+        }
     }
-    imageTable.clear();
 }
 
 Mix_Music *Resources::GetMusic(string file) {

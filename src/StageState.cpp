@@ -98,6 +98,10 @@ void StageState::Update(float dt) {
             }
         }
     }
+    
+    if (Alien::alienCount == 0) {
+        
+    }
 }
 
 void StageState::Render() {

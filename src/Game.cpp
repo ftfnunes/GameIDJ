@@ -12,7 +12,7 @@ using namespace std;
 
 Game *Game::instance = nullptr;
 
-Game::Game(string title, int width, int height) : dt(0), framestart(0)   {
+Game::Game(string title, int width, int height) : dt(0), framestart(0) {
     if (instance == nullptr) {
         instance = this;
 
@@ -58,7 +58,6 @@ Game::Game(string title, int width, int height) : dt(0), framestart(0)   {
     } else {
         throw "There are two instances of game created.";
     }
-
 }
 
 Game::~Game() {
@@ -69,6 +68,8 @@ Game::~Game() {
     while (stateStack.empty()) {
         stateStack.pop();
     }
+
+    clearResources();
 
     // Destroy window and renderer
     SDL_DestroyRenderer(renderer);
@@ -135,11 +136,6 @@ void Game::Run() {
             SDL_Delay(33);
         }
     }
-
-    while (!stateStack.empty()) {
-        stateStack.pop();
-    }
-    clearResources();
 }
 
 SDL_Renderer* Game::GetRenderer() {

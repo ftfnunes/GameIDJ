@@ -4,18 +4,21 @@
 #include <Game.h>
 #include <InputManager.h>
 #include <TitleState.h>
+#include <Camera.h>
 #include "EndState.h"
 #include "GameData.h"
 #include "Text.h"
 
 EndState::EndState() : State(), backgroundMusic() {
-    string musicFile, bgFile;
+    string musicFile, bgFile, instructions;
     if (GameData::playerVictory) {
         musicFile = "audio/endStateWin.ogg";
         bgFile = "img/win.jpg";
+        instructions = "Press space bar to play again or escape to exit!";
     } else {
         musicFile = "audio/endStateLose.ogg";
         bgFile = "img/lose.jpg";
+        instructions = "Press space bar to try again or escape to give up!";
     }
 
     backgroundMusic.Open(musicFile);
@@ -26,20 +29,18 @@ EndState::EndState() : State(), backgroundMusic() {
 
     auto fontObj = new GameObject(1);
     SDL_Color red = {255, 0, 0, 255};
-    fontObj->AddComponent(new Text(*fontObj, "font/Call me maybe.ttf", 40, Text::TextStyle::SOLID, "Press space bar to try again or escape to give up!", red));
+    fontObj->AddComponent(new Text(*fontObj, "font/Call me maybe.ttf", 40, Text::TextStyle::SOLID, instructions, red));
     fontObj->box.x = WIDTH/2 - fontObj->box.w/2;
-    fontObj->box.y = HEIGHT/2 -100;
+    fontObj->box.y = HEIGHT/2 + 50;
     AddObject(fontObj);
 
     backgroundMusic.Play();
 }
 
 EndState::~EndState() {
-
 }
 
 void EndState::LoadAssets() {
-
 }
 
 void EndState::Update(float dt) {
@@ -54,11 +55,12 @@ void EndState::Update(float dt) {
 }
 
 void EndState::Render() {
-
+    RenderArray();
 }
 
 void EndState::Start() {
-
+    Camera::pos = Vec2(0, 0);
+    StartArray();
 }
 
 void EndState::Pause() {

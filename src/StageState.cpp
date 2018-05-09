@@ -9,6 +9,8 @@
 #include <Collider.h>
 #include <Collision.h>
 #include <StageState.h>
+#include <GameData.h>
+#include <EndState.h>
 
 
 StageState::StageState() : backgroundMusic("audio/stageState.ogg"),
@@ -98,9 +100,10 @@ void StageState::Update(float dt) {
             }
         }
     }
-    
-    if (Alien::alienCount == 0) {
-        
+    auto endGame = Alien::alienCount == 0 || PenguinBody::player == nullptr;
+    if (endGame) {
+        GameData::playerVictory = PenguinBody::player != nullptr;
+        Game::GetInstance().Push(new EndState());
     }
 }
 

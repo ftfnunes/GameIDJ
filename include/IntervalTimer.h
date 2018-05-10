@@ -13,9 +13,9 @@ using namespace std;
 
 #define EVENT_TIMER_TYPE "EventTimer"
 
-class EventTimer : public Component {
+class IntervalTimer : public Component {
 public:
-    EventTimer(GameObject &associated, float timeLimit, function<void()> callback);
+    IntervalTimer(GameObject &associated, float timeLimit, function<void()> callback);
 
     void Update(float dt) override;
 

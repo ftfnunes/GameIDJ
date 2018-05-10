@@ -25,7 +25,7 @@ TitleState::TitleState() : State() {
         text->SetColor(color);
         text->RemakeTexture();
     };
-    fontObj->AddComponent(new EventTimer(*fontObj, 0.6, callback));
+    fontObj->AddComponent(new IntervalTimer(*fontObj, 0.6, callback));
     fontObj->box.x = WIDTH/2 - fontObj->box.w/2;
     fontObj->box.y = HEIGHT/2;
     AddObject(fontObj);

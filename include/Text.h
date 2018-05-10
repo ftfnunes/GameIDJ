@@ -30,6 +30,8 @@ public:
     void SetFontFile(string fontFile);
     void SetFontSize(int fontSize);
 
+    SDL_Color GetColor();
+
     void RemakeTexture();
 private:
     shared_ptr<TTF_Font> font;

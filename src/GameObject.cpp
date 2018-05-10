@@ -20,8 +20,8 @@ GameObject::~GameObject() {
 }
 
 void GameObject::Update(float dt) {
-    for(auto it = components.begin(); it != components.end(); ++it) {
-        (*it)->Update(dt);
+    for(int i = 0; i < components.size(); ++i) {
+        components[i]->Update(dt);
     }
 
     updated = true;

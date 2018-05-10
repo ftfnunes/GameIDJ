@@ -92,8 +92,13 @@ void Text::RemakeTexture() {
     }
 
     texture = SDL_CreateTextureFromSurface(Game::GetInstance().GetRenderer(), surface);
+    SDL_SetTextureAlphaMod(texture, color.a);
     associated.box.w = surface->w;
     associated.box.h = surface->h;
     SDL_FreeSurface(surface);
+}
+
+SDL_Color Text::GetColor() {
+    return color;
 }
 

@@ -4,6 +4,8 @@
 #include <StageState.h>
 #include <CameraFollower.h>
 #include <Camera.h>
+#include <IntervalTimer.h>
+#include <tiff.h>
 #include "TitleState.h"
 #include "Text.h"
 
@@ -15,15 +17,21 @@ TitleState::TitleState() : State() {
 
     auto fontObj = new GameObject(1);
     SDL_Color red = {255, 0, 0, 255};
-    fontObj->AddComponent(new Text(*fontObj, "font/Call me maybe.ttf", 40, Text::TextStyle::SOLID, "Press space bar to start!", red));
+    auto text = new Text(*fontObj, "font/Call me maybe.ttf", 40, Text::TextStyle::SOLID, "Press space bar to start!", red);
+    fontObj->AddComponent(text);
+    auto callback = [text] {
+        auto color = text->GetColor();
+        color.a = (uint8) (color.a == 255 ? 0 : 255);
+        text->SetColor(color);
+        text->RemakeTexture();
+    };
+    fontObj->AddComponent(new EventTimer(*fontObj, 0.6, callback));
     fontObj->box.x = WIDTH/2 - fontObj->box.w/2;
-    fontObj->box.y = HEIGHT/2 + 50;
+    fontObj->box.y = HEIGHT/2;
     AddObject(fontObj);
 }
 
-TitleState::~TitleState() {
-
-}
+TitleState::~TitleState() = default;
 
 void TitleState::Update(float dt) {
     auto inputManager = InputManager::GetInstance();

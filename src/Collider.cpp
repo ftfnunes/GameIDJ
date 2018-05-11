@@ -1,16 +1,12 @@
 //
 // Created by ftfnunes on 17/04/18.
 //
-
-#include <SDL_rect.h>
 #include <Camera.h>
 #include <Game.h>
 #include "Collider.h"
 #ifdef DEBUG
 #include "Camera.h"
 #include "Game.h"
-
-#include <SDL2/SDL.h>
 #endif // DEBUG
 
 

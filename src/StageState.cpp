@@ -32,6 +32,8 @@ StageState::StageState() : backgroundMusic("audio/stageState.ogg"),
     tileMap = new TileMap(*mapObject, "map/tileMap.txt", set);
     mapObject->AddComponent(tileMap);
 
+    Alien::alienCount = 0;
+
     auto alienObject = new GameObject(1);
     alienObject->box = Rect(512, 300, 0, 0);
     auto alien = new Alien(*alienObject, 5);

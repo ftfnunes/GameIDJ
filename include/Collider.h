@@ -8,7 +8,6 @@
 #include "GameObject.h"
 
 #define COLLIDER_TYPE "Collider"
-#define DEBUG
 
 class Collider : public Component {
 public:

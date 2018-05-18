@@ -34,11 +34,20 @@ StageState::StageState() : backgroundMusic("audio/stageState.ogg"),
 
     Alien::alienCount = 0;
 
-    auto alienObject = new GameObject(1);
-    alienObject->box = Rect(512, 300, 0, 0);
-    auto alien = new Alien(*alienObject, 5);
-    alienObject->AddComponent(alien);
-    AddObject(alienObject);
+    auto alienObject1 = new GameObject(1);
+    alienObject1->box = Rect(rand() % MAP_WIDTH, rand() % MAP_HEIGHT, 0, 0);
+    alienObject1->AddComponent(new Alien(*alienObject1, 5));
+    AddObject(alienObject1);
+
+    auto alienObject2 = new GameObject(1);
+    alienObject2->box = Rect(rand() % MAP_WIDTH, rand() % MAP_HEIGHT, 0, 0);
+    alienObject2->AddComponent(new Alien(*alienObject2, 5, 2*ALIEN_COOLDOWN));
+    AddObject(alienObject2);
+
+    auto alienObject3 = new GameObject(1);
+    alienObject3->box = Rect(rand() % MAP_WIDTH, rand() % MAP_HEIGHT, 0, 0);
+    alienObject3->AddComponent(new Alien(*alienObject3, 5, 3*ALIEN_COOLDOWN));
+    AddObject(alienObject3);
 
     auto playerObject = new GameObject();
     playerObject->box = Rect(704, 640);

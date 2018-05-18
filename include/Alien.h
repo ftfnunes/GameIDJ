@@ -20,7 +20,7 @@
 
 class Alien : public Component {
 public:
-    explicit Alien(GameObject &associated, int nMinions);
+    explicit Alien(GameObject &associated, int nMinions, float timeOffset = 0);
     ~Alien();
 
     void Start() override;
@@ -45,6 +45,8 @@ private:
     Vec2 speed;
     int hp;
     int nMinions;
+    float timeOffset;
+    bool start;
 
     vector<weak_ptr<GameObject>> minionArray;
 };

@@ -83,9 +83,9 @@ void PenguinBody::Update(float dt) {
         speed = Vec2(linearSpeed, 0).RotateDeg(angle);
         associated.box += Vec2(deltaPos, 0).RotateDeg(angle);
         associated.box.x = associated.box.x < 0 ? 0 : associated.box.x;
-        associated.box.x = associated.box.x > 1408 ? 1408 : associated.box.x;
+        associated.box.x = associated.box.x > MAP_WIDTH ? MAP_WIDTH : associated.box.x;
         associated.box.y = associated.box.y < 0 ? 0 : associated.box.y;
-        associated.box.y = associated.box.y > 1280 ? 1280 : associated.box.y;
+        associated.box.y = associated.box.y > MAP_HEIGHT ? MAP_HEIGHT : associated.box.y;
     }
 }
 

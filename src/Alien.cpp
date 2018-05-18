@@ -9,7 +9,7 @@
 
 int Alien::alienCount = 0;
 
-Alien::Alien(GameObject &associated, int nMinions) : Component(associated), nMinions(nMinions), state(RESTING) {
+Alien::Alien(GameObject &associated, int nMinions, float timeOffset) : Component(associated), nMinions(nMinions), state(RESTING), timeOffset(timeOffset), start(false) {
     auto sprite = new Sprite(associated, "img/alien.png");
     associated.AddComponent(sprite);
     associated.AddComponent(new Collider(associated, Vec2(0.65, 0.6), Vec2(-8, 0)));
@@ -45,7 +45,10 @@ void Alien::Update(float dt) {
             if (state == RESTING) {
                 restTimer.Update(dt);
 
-                if (restTimer.Get() > ALIEN_COOLDOWN) {
+                auto cooldown = ALIEN_COOLDOWN;
+                cooldown += start ? 0 : timeOffset;
+
+                if (restTimer.Get() > cooldown) {
                     restTimer.Restart();
                     state = MOVING;
 
